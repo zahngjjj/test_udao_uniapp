@@ -1,3 +1,4 @@
+
 <template>
   <view class="mine-container" :style="{height: `${windowHeight}px`}">
     <!--顶部个人信息栏-->
@@ -25,9 +26,10 @@
       </view>
     </view>
 
+    <!--功能选项栏目-->
     <view class="content-section">
       <view class="mine-actions grid col-4 text-center">
-        <view class="action-item" @click="handleJiaoLiuQun">
+        <view class="action-item" @click="handleBuilding">
           <view class="iconfont icon-friendfill text-pink icon"></view>
           <text class="text">交流群</text>
         </view>
@@ -45,6 +47,7 @@
         </view>
       </view>
 
+      <!--功能列表-->
       <view class="menu-list">
         <view class="list-cell list-cell-arrow" @click="handleToEditInfo">
           <view class="menu-item-box">
@@ -71,128 +74,166 @@
           </view>
         </view>
       </view>
-
     </view>
+
+
+
+
+
+    <!--测试代码-->
+    <!--<button @click="showTestInfo">测试</button>-->
+
   </view>
 </template>
 
-<script>
-  import storage from '@/utils/storage'
 
-  export default {
-    data() {
-      return {
-        name: this.$store.state.user.name,
-        version: getApp().globalData.config.appInfo.version
-      }
-    },
-    computed: {
-      avatar() {
-        return this.$store.state.user.avatar
-      },
-      windowHeight() {
-        return uni.getSystemInfoSync().windowHeight - 50
-      }
-    },
-    methods: {
-      handleToInfo() {
-        this.$tab.navigateTo('/pages/mine/info/index')
-      },
-      handleToEditInfo() {
-        this.$tab.navigateTo('/pages/mine/info/edit')
-      },
-      handleToSetting() {
-        this.$tab.navigateTo('/pages/mine/setting/index')
-      },
-      handleToLogin() {
-        this.$tab.reLaunch('/pages/login')
-      },
-      handleToAvatar() {
-        this.$tab.navigateTo('/pages/mine/avatar/index')
-      },
-      handleLogout() {
-        this.$modal.confirm('确定注销并退出系统吗？').then(() => {
-          this.$store.dispatch('LogOut').then(() => {
-            this.$tab.reLaunch('/pages/index')
-          })
-        })
-      },
-      handleHelp() {
-        this.$tab.navigateTo('/pages/mine/help/index')
-      },
-      handleAbout() {
-        this.$tab.navigateTo('/pages/mine/about/index')
-      },
-      handleJiaoLiuQun() {
-        this.$modal.showToast('微信搜索 naidaguo 后，添加好友后拉你进技术交流群')
-      },
-      handleBuilding() {
-        this.$modal.showToast('模块建设中~')
-      }
-    }
-  }
+<script setup>
+import { ref,computed } from 'vue'
+import {useUserStore} from "@/store/modules/user";
+import {toast} from "@/utils/common";
+
+
+const title = ref('Hello World')
+
+
+//============计算属性===================
+
+//窗口高度
+const windowHeight = computed(() => {
+  return uni.getSystemInfoSync().windowHeight
+})
+
+const userStore = useUserStore()
+const avatar = computed(() => {
+  return userStore.getAvatar
+})
+
+const name = computed(() => {
+  return userStore.getName
+})
+
+
+//==========方法===============
+const handleToAvatar = () => {
+  uni.navigateTo({
+    url: '/pages/mine/avatar/index'
+  })
+}
+
+const handleToLogin = () => {
+  uni.navigateTo({
+    url: '/pages/login'
+  })
+}
+
+const handleToInfo = () => {
+  //
+  uni.navigateTo({
+    url: '/pages/mine/info/index'
+  })
+}
+
+
+//=========功能栏目点击事件===========
+
+const handleBuilding = () => {
+  toast('功能正在建设中...')
+}
+
+//========功能列表点击时间===========
+const handleToEditInfo = () => {
+  // 编辑个人资料
+  uni.navigateTo({
+    url: '/pages/mine/info/edit'
+  })
+}
+
+const handleHelp = () => {
+  //常见问题
+  uni.navigateTo({
+    url: '/pages/mine/help/index'
+  })
+}
+
+const handleAbout = () => {
+  //关于我们
+  uni.navigateTo({
+    url: '/pages/mine/about/index'
+  })
+}
+
+const handleToSetting = () => {
+  //应用设置
+  uni.navigateTo({
+    url: '/pages/mine/setting/index'
+  })
+}
+
+
 </script>
 
+
+
 <style lang="scss">
-  page {
-    background-color: #f5f6f7;
-  }
+page {
+  background-color: #f5f6f7;
+}
 
-  .mine-container {
-    width: 100%;
-    height: 100%;
+.mine-container {
+  width: 100%;
+  height: 100%;
 
 
-    .header-section {
-      padding: 15px 15px 45px 15px;
-      background-color: #3c96f3;
-      color: white;
+  .header-section {
+    padding: 15px 15px 45px 15px;
+    background-color: #3c96f3;
+    color: white;
 
-      .login-tip {
+    .login-tip {
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .cu-avatar {
+      border: 2px solid #eaeaea;
+
+      .icon {
+        font-size: 40px;
+      }
+    }
+
+    .user-info {
+      margin-left: 15px;
+
+      .u_title {
         font-size: 18px;
-        margin-left: 10px;
-      }
-
-      .cu-avatar {
-        border: 2px solid #eaeaea;
-
-        .icon {
-          font-size: 40px;
-        }
-      }
-
-      .user-info {
-        margin-left: 15px;
-
-        .u_title {
-          font-size: 18px;
-          line-height: 30px;
-        }
+        line-height: 30px;
       }
     }
+  }
 
-    .content-section {
-      position: relative;
-      top: -50px;
+  .content-section {
+    position: relative;
+    top: -50px;
 
-      .mine-actions {
-        margin: 15px 15px;
-        padding: 20px 0px;
-        border-radius: 8px;
-        background-color: white;
+    .mine-actions {
+      margin: 15px 15px;
+      padding: 20px 0px;
+      border-radius: 8px;
+      background-color: white;
 
-        .action-item {
-          .icon {
-            font-size: 28px;
-          }
+      .action-item {
+        .icon {
+          font-size: 28px;
+        }
 
-          .text {
-            display: block;
-            font-size: 13px;
-            margin: 8px 0px;
-          }
+        .text {
+          display: block;
+          font-size: 13px;
+          margin: 8px 0px;
         }
       }
     }
   }
+}
 </style>

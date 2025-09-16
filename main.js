@@ -1,26 +1,27 @@
-import Vue from 'vue'
 import App from './App'
-import store from './store' // store
-import plugins from './plugins' // plugins
-import './permission' // permission
-import formCreate from '@form-create/vant'
+import plugins  from "./plugins";
+import pstore from './store'
 
-// #ifdef H5
-import Vant from 'vant'
-import 'vant/lib/index.css'
-Vue.use(Vant)
-// #endif
 
-Vue.use(plugins)
-Vue.use(formCreate)
-
+// #ifndef VUE3
+import Vue from 'vue'
+import './uni.promisify.adaptor'
 Vue.config.productionTip = false
-Vue.prototype.$store = store
-
 App.mpType = 'app'
-
 const app = new Vue({
   ...App
 })
-
 app.$mount()
+// #endif
+
+// #ifdef VUE3
+import { createSSRApp } from 'vue'
+export function createApp() {
+  const app = createSSRApp(App)
+  //注册pinia
+  app.use(pstore)
+  return {
+    app
+  }
+}
+// #endif

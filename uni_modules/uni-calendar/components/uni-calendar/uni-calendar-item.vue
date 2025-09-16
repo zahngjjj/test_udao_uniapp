@@ -51,11 +51,10 @@
 </template>
 
 <script>
-	import {
-	initVueI18n
-	} from '@dcloudio/uni-i18n'
-	import messages from './i18n/index.js'
-	const {	t	} = initVueI18n(messages)
+	import { initVueI18n } from '@dcloudio/uni-i18n'
+	import i18nMessages from './i18n/index.js'
+	const {	t	} = initVueI18n(i18nMessages)
+
 	export default {
 		emits:['change'],
 		props: {
@@ -102,7 +101,7 @@
 	$uni-color-error: #e43d33;
 	$uni-opacity-disabled: 0.3;
 	$uni-text-color-disable:#c0c0c0;
-	$uni-color-primary: #2979ff;
+	$uni-primary: #2979ff !default;
 	.uni-calendar-item__weeks-box {
 		flex: 1;
 		/* #ifndef APP-NVUE */
@@ -152,11 +151,11 @@
 	}
 
 	.uni-calendar-item--isDay-text {
-		color: $uni-color-primary;
+		color: $uni-primary;
 	}
 
 	.uni-calendar-item--isDay {
-		background-color: $uni-color-primary;
+		background-color: $uni-primary;
 		opacity: 0.8;
 		color: #fff;
 	}
@@ -167,13 +166,13 @@
 	}
 
 	.uni-calendar-item--checked {
-		background-color: $uni-color-primary;
+		background-color: $uni-primary;
 		color: #fff;
 		opacity: 0.8;
 	}
 
 	.uni-calendar-item--multiple {
-		background-color: $uni-color-primary;
+		background-color: $uni-primary;
 		color: #fff;
 		opacity: 0.8;
 	}

@@ -6,38 +6,40 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: '',
-        content: ''
-      }
-    },
-    onLoad(options) {
-      this.title = options.title
-      this.content = options.content
-      uni.setNavigationBarTitle({
-        title: options.title
-      })
-    }
-  }
+<script setup>
+import { ref } from 'vue'
+import {
+  onLoad,
+  onReady,
+} from "@dcloudio/uni-app";
+
+const title = ref('')
+const content = ref('')
+
+
+onLoad((options) => {
+  title.value = options.title
+  content.value = options.content
+  uni.setNavigationBarTitle({
+    title: options.title
+  })
+});
 </script>
 
 <style scoped>
-  page {
-    background-color: #ffffff;
-  }
+page {
+  background-color: #ffffff;
+}
 
-  .view-title {
-    font-weight: bold;
-  }
+.view-title {
+  font-weight: bold;
+}
 
-  .view-content {
-    font-size: 26rpx;
-    padding: 12px 5px 0;
-    color: #333;
-    line-height: 24px;
-    font-weight: normal;
-  }
+.view-content {
+  font-size: 26rpx;
+  padding: 12px 5px 0;
+  color: #333;
+  line-height: 24px;
+  font-weight: normal;
+}
 </style>

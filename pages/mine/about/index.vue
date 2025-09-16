@@ -43,33 +43,32 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        url: getApp().globalData.config.appInfo.site_url,
-        version: getApp().globalData.config.appInfo.version
-      }
-    }
-  }
+<script setup>
+import config from '@/config'
+import { ref } from 'vue'
+
+const version = ref(config.appInfo.version)
+const url = ref(config.appInfo.site_url)
 </script>
 
+
 <style lang="scss">
-  page {
-    background-color: #f8f8f8;
-  }
+page {
+  background-color: #f8f8f8;
+}
 
-  .copyright {
-    margin-top: 50rpx;
-    text-align: center;
-    line-height: 60rpx;
-    color: #999;
-  }
+.copyright {
+  margin-top: 50rpx;
+  text-align: center;
+  line-height: 60rpx;
+  color: #999;
+  font-size: 20rpx;
+}
 
-  .header-section {
-    display: flex;
-    padding: 30rpx 0 0;
-    flex-direction: column;
-    align-items: center;
-  }
+.header-section {
+  display: flex;
+  padding: 30rpx 0 0;
+  flex-direction: column;
+  align-items: center;
+}
 </style>

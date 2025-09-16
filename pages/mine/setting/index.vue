@@ -30,49 +30,74 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        windowHeight: uni.getSystemInfoSync().windowHeight
-      }
-    },
-    methods: {
-      handleToPwd() {
-        this.$tab.navigateTo('/pages/mine/pwd/index')
-      },
-      handleToUpgrade() {
-        this.$modal.showToast('模块建设中~')
-      },
-      handleCleanTmp() {
-        this.$modal.showToast('模块建设中~')
-      },
-      handleLogout() {
-        this.$modal.confirm('确定注销并退出系统吗？').then(() => {
-          this.$store.dispatch('LogOut').then(() => {
-            this.$tab.reLaunch('/pages/index')
+<script setup>
+import { ref} from 'vue'
+import { useUserStore} from "@/store/modules/user";
+
+const userStore = useUserStore()
+
+const windowHeight = ref(uni.getSystemInfoSync().windowHeight)
+
+
+const handleToPwd = () => {
+  uni.navigateTo({
+    url: '/pages/mine/pwd/index'
+  })
+}
+
+const handleToUpgrade = () => {
+  uni.showToast({
+    title: '当前已是最新版本',
+    icon: 'none'
+  })
+}
+
+const handleCleanTmp = () => {
+  //延迟1秒
+  setTimeout(() => {
+    uni.showToast({
+      title: '清理成功',
+      icon: 'none'
+    })
+  }, 1000)
+}
+
+
+const handleLogout = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定退出登录吗？',
+    success: function (res) {
+      if (res.confirm) {
+        userStore.LogOut().then(() => {
+          uni.reLaunch({
+            url: '/pages/login'
           })
         })
+        }
       }
-    }
-  }
+  })
+}
+
 </script>
 
-<style lang="scss" scoped>
-  .page {
-    background-color: #f8f8f8;
-  }
 
-  .item-box {
-    background-color: #FFFFFF;
-    margin: 30rpx;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 10rpx;
-    border-radius: 8rpx;
-    color: #303133;
-    font-size: 32rpx;
-  }
+
+<style lang="scss" scoped>
+.page {
+  background-color: #f8f8f8;
+}
+
+.item-box {
+  background-color: #FFFFFF;
+  margin: 30rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10rpx;
+  border-radius: 8rpx;
+  color: #303133;
+  font-size: 32rpx;
+}
 </style>
