@@ -150,11 +150,6 @@
 				animationDelay: '0s'
 			}
 		},
-		watch:{
-			text:function(newValue,oldValue){
-				this.initSize();
-			}
-		},
 		computed: {
 			isShowGetMore() {
 				return this.showGetMore === true || this.showGetMore === 'true'

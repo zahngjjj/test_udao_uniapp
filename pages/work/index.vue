@@ -69,6 +69,12 @@
             <text class="text">日志管理</text>
           </view>
         </uni-grid-item>
+        <uni-grid-item>
+          <view class="grid-item-box" @click="goToFormTest">
+            <uni-icons type="compose" size="30"></uni-icons>
+            <text class="text">表单测试</text>
+          </view>
+        </uni-grid-item>
       </uni-grid>
     </view>
   </view>
@@ -102,9 +108,16 @@ const changeSwiper = (e) => {
 }
 
 const changeGrid = (e) =>{
+  console.log(e,'eee')
   uni.showToast({
     title: '模块建设中~',
     icon: 'none'
+  })
+}
+
+const goToFormTest = () => {
+  uni.navigateTo({
+    url: '/pages/formtest'
   })
 }
 </script>

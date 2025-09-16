@@ -18,7 +18,7 @@
 			<view class="uni-dialog-button" v-if="showClose" @click="closeDialog">
 				<text class="uni-dialog-button-text">{{closeText}}</text>
 			</view>
-			<view class="uni-dialog-button" :class="showClose?'uni-border-left':''" @click="onOk">
+			<view class="uni-dialog-button uni-border-left" @click="onOk">
 				<text class="uni-dialog-button-text uni-button-color">{{okText}}</text>
 			</view>
 		</view>
@@ -61,7 +61,7 @@
 	export default {
 		name: "uniPopupDialog",
 		mixins: [popup],
-		emits: ['confirm', 'close', 'update:modelValue', 'input'],
+		emits: ['confirm', 'close'],
 		props: {
 			inputType: {
 				type: String,
@@ -71,20 +71,10 @@
 				type: Boolean,
 				default: true
 			},
-			// #ifdef VUE2
 			value: {
 				type: [String, Number],
 				default: ''
 			},
-			// #endif
-			// #ifdef VUE3
-			modelValue: {
-				type: [Number, String],
-				default: ''
-			},
-			// #endif
-
-
 			placeholder: {
 				type: [String, Number],
 				default: ''
@@ -121,7 +111,7 @@
 				type: Number,
 				default: -1,
 			},
-			focus: {
+			focus:{
 				type: Boolean,
 				default: true,
 			}
@@ -161,16 +151,6 @@
 				} else {
 					this.val = val
 				}
-			},
-			val(val) {
-				// #ifdef VUE2
-				// TODO 兼容 vue2
-				this.$emit('input', val);
-				// #endif
-				// #ifdef VUE3
-				// TODO　兼容　vue3
-				this.$emit('update:modelValue', val);
-				// #endif
 			}
 		},
 		created() {
@@ -179,10 +159,7 @@
 			// this.popup.closeMask()
 			if (this.mode === 'input') {
 				this.dialogType = 'info'
-				this.val = this.value;
-				// #ifdef VUE3
-				this.val = this.modelValue;
-				// #endif
+				this.val = this.value
 			} else {
 				this.dialogType = this.type
 			}
@@ -197,6 +174,7 @@
 				} else {
 					this.$emit('confirm')
 				}
+				this.$emit("input",this.val);
 				if (this.beforeClose) return
 				this.popup.close()
 			},

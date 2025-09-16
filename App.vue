@@ -60,5 +60,8 @@
 </script>
 
 <style lang="scss">
-@import '@/static/scss/index.scss'
+// 引入项目样式
+@import '@/static/scss/index.scss';
+// 引入 uview-plus 组件样式
+@import "uni_modules/uview-plus/index.scss";
 </style>

@@ -126,7 +126,7 @@
 		color: #fff;
 		border-radius: 3px;
 		background-color: $uni-info;
-		border-width: 1px;
+		border-width: 1rpx;
 		border-style: solid;
 		border-color: $uni-info;
 		/* #ifdef H5 */
@@ -206,14 +206,14 @@
 
 		// other attr
 		&--circle {
-			border-radius: 15px;
+			border-radius: 15px !important;
 		}
 
 		&--mark {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border-top-right-radius: 15px;
-			border-bottom-right-radius: 15px;
+			border-top-left-radius: 0 !important;
+			border-bottom-left-radius: 0 !important;
+			border-top-right-radius: 15px !important;
+			border-bottom-right-radius: 15px !important;
 		}
 
 		&--disabled {

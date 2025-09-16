@@ -1,7 +1,7 @@
 {
   "id": "uni-tooltip",
-  "displayName": "uni-tooltip 提示文字",
-  "version": "0.2.3",
+  "displayName": "uni-tooltip",
+  "version": "0.2.1",
   "description": "Tooltip 提示文字",
   "keywords": [
     "uni-tooltip",
@@ -10,14 +10,14 @@
     "tip",
     "文字提示"
 ],
-  "repository": "https://github.com/dcloudio/uni-ui",
-  "engines": {
-    "HBuilderX": ""
+  "repository": "",
+"engines": {
   },
-  "directories": {
-    "example": "../../temps/example_temps"
-  },
-"dcloudext": {
+  "dcloudext": {
+    "category": [
+        "前端组件",
+        "通用组件"
+    ],
     "sale": {
       "regular": {
         "price": "0.00"
@@ -34,8 +34,7 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": "",
-    "type": "component-vue"
+    "npmurl": ""
   },
   "uni_modules": {
     "dependencies": [],
@@ -72,8 +71,7 @@
           "阿里": "u",
           "百度": "u",
           "字节跳动": "u",
-          "QQ": "u",
-          "京东": "u"
+          "QQ": "u"
         },
         "快应用": {
           "华为": "u",

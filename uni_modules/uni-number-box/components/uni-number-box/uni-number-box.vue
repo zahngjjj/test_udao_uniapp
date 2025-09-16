@@ -1,14 +1,12 @@
 <template>
 	<view class="uni-numbox">
 		<view @click="_calcValue('minus')" class="uni-numbox__minus uni-numbox-btns" :style="{background}">
-			<text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue <= min || disabled }"
-				:style="{color}">-</text>
+			<text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue <= min || disabled }" :style="{color}">-</text>
 		</view>
-		<input :disabled="disabled" @focus="_onFocus" @blur="_onBlur" class="uni-numbox__value"
-			:type="step<1?'digit':'number'" v-model="inputValue" :style="{background, color, width:widthWithPx}" />
+		<input :disabled="disabled" @focus="_onFocus" @blur="_onBlur" class="uni-numbox__value" type="number"
+			v-model="inputValue" :style="{background, color}" />
 		<view @click="_calcValue('plus')" class="uni-numbox__plus uni-numbox-btns" :style="{background}">
-			<text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue >= max || disabled }"
-				:style="{color}">+</text>
+			<text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue >= max || disabled }" :style="{color}">+</text>
 		</view>
 	</view>
 </template>
@@ -23,7 +21,6 @@
 	 * @property {Number} step 每次点击改变的间隔大小
 	 * @property {String} background 背景色
 	 * @property {String} color 字体颜色（前景色）
-	 * @property {Number} width 输入框宽度(单位:px)
 	 * @property {Boolean} disabled = [true|false] 是否为禁用状态
 	 * @event {Function} change 输入框值改变时触发的事件，参数为输入框当前的 value
 	 * @event {Function} focus 输入框聚焦时触发的事件，参数为 event 对象
@@ -65,10 +62,6 @@
 			disabled: {
 				type: Boolean,
 				default: false
-			},
-			width: {
-				type: Number,
-				default: 40,
 			}
 		},
 		data() {
@@ -82,11 +75,6 @@
 			},
 			modelValue(val) {
 				this.inputValue = +val;
-			}
-		},
-		computed: {
-			widthWithPx() {
-				return this.width + 'px';
 			}
 		},
 		created() {
@@ -126,11 +114,11 @@
 				}
 
 				this.inputValue = (value / scale).toFixed(String(scale).length - 1);
+				this.$emit("change", +this.inputValue);
 				// TODO vue2 兼容
 				this.$emit("input", +this.inputValue);
 				// TODO vue3 兼容
 				this.$emit("update:modelValue", +this.inputValue);
-				this.$emit("change", +this.inputValue);
 			},
 			_getDecimalScale() {
 
@@ -144,8 +132,8 @@
 			_onBlur(event) {
 				this.$emit('blur', event)
 				let value = event.detail.value;
-				if (isNaN(value)) {
-					this.inputValue = this.min;
+				if (!value) {
+					// this.inputValue = 0;
 					return;
 				}
 				value = +value;
@@ -156,9 +144,8 @@
 				}
 				const scale = this._getDecimalScale();
 				this.inputValue = value.toFixed(String(scale).length - 1);
-				this.$emit("input", +this.inputValue);
-				this.$emit("update:modelValue", +this.inputValue);
 				this.$emit("change", +this.inputValue);
+				this.$emit("input", +this.inputValue);
 			},
 			_onFocus(event) {
 				this.$emit('focus', event)
@@ -166,7 +153,7 @@
 		}
 	};
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 	$box-height: 26px;
 	$bg: #f5f5f5;
 	$br: 2px;
@@ -218,7 +205,7 @@
 	.uni-numbox--text {
 		// fix nvue
 		line-height: 20px;
-		margin-bottom: 2px;
+
 		font-size: 20px;
 		font-weight: 300;
 		color: $color;

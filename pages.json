@@ -72,6 +72,12 @@
       "style": {
         "navigationBarTitleText": "修改头像"
       }
+    },
+    {
+      "path": "pages/formtest",
+      "style": {
+        "navigationBarTitleText": "表单测试"
+      }
     }
   ],
   "tabBar": {
