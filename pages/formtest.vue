@@ -1,5 +1,5 @@
 <template>
-    <view> 
+    <view class="content"> 
 
         <form-create-uni ref="formCreateRef" :rule="formDetailPreview.rule" :option="formDetailPreview.option" v-model="formDetailPreview.value" @submit="submit"></form-create-uni>
 
@@ -107,5 +107,8 @@ const setConfAndFields2 = (
     })
 </script>
 
-<style lang="scss">
+<style scoped>
+.content {
+	padding: 12px;
+}
 </style>

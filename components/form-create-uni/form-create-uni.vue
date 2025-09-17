@@ -5,10 +5,10 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-            <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
+            <!-- <p v-if="item.type==='fcRow'">  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
-                <view 
-					v-if="item?.type === 'html'" 
+             <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type === 'html'">
+	                <view
 					class="html-content"
 					:style="item?.style"
 					:hidden="item?.hidden"
@@ -18,9 +18,11 @@
 						:selectable="item?.native || false">
 					</rich-text>
 				</view>	
+            </u-form-item>
+
             <u-form-item :label="item?.title" :prop="item?.field"
 					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
-					<!-- 计数器 -->
+                    <!-- 计数器 -->
 					<u-number-box v-model="form[item?.field]" v-if="item?.type === 'inputNumber'"
 						:disabled="item?.props?.disabled" :placeholder="item?.props?.placeholder"
 						:min="item?.props?.min" :max="item?.props?.max" :step="item?.props?.step"></u-number-box>
@@ -113,7 +115,51 @@
 					<u--input v-model="form[item?.field]" :placeholder="item?.props?.placeholder"
 						:disabled="item?.props?.disabled" :focus="item?.props?.autofocus"
 						:clearable="item?.props?.clearable" :showWordLimit="item?.props?.showWordLimit" v-else />
-				</u-form-item>
+			</u-form-item>
+
+	    <!-- fcRow布局渲染 -->
+             <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type === 'fcRow'">
+				<view 
+					v-if="item?.type === 'fcRow'"
+					class="fc-row"
+					:style="item?.style"
+					:hidden="item?.hidden"
+					v-show="item?.display !== false">
+					<!-- 遍历fcRow的children，渲染col内容 -->
+					<template v-for="(colItem, colIndex) in item?.children" :key="colIndex">
+						<view 
+							v-if="colItem?.type === 'col'" 
+							class="fc-col"
+							:style="colItem?.style">
+							<!-- 遍历col的children，渲染具体的表单项 -->
+							<template v-for="(childItem, childIndex) in colItem?.children" :key="childIndex">
+								<!-- 递归渲染子项，这里简化为直接渲染表单项 -->
+								<u-form-item 
+									:label="childItem?.title" 
+									:prop="childItem?.field"
+									v-if="childItem?.type === 'datePicker'">
+									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
+										:title="form[childItem?.field] || '请点此选择'" class="clickable-cell" />
+									<u-datetime-picker :show="picker[childItem?.field]" mode="date" @confirm="confirmDate"
+										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
+								</u-form-item>
+								<!-- 可以根据需要添加其他类型的表单项 -->
+								<u-form-item 
+									:label="childItem?.title" 
+									:prop="childItem?.field"
+									v-else-if="childItem?.type === 'input'">
+									<u--input 
+										v-model="form[childItem?.field]" 
+										:placeholder="childItem?.props?.placeholder"
+										:disabled="childItem?.props?.disabled">
+									</u--input>
+								</u-form-item>
+							</template>
+						</view>
+					</template>
+				</view>
+            </u-form-item>
+                
 				<!-- 提示 -->
 				<u-alert :title="item?.props?.title" :type="item?.props?.type" :description="item?.props?.description"
 					:closable="item?.props?.closable" :center="item?.props?.center"
@@ -161,23 +207,60 @@
 
 	const rules = ref({})
 
+	// const getModel = (formD) => {
+
+	// 	for (let i = 0; i < formD.length; i++) {
+
+	// 		const ele = formD[i]
+
+	// 		form.value[ele.field] = ''
+
+	// 		if (ele.type === 'timePicker' || ele.type === 'datePicker' || ele.type === 'colorPicker') {
+
+	// 			picker.value[ele.field] = false
+
+	// 		}
+
+	// 	}
+
+	// }
+
 	const getModel = (formD) => {
 
 		for (let i = 0; i < formD.length; i++) {
 
 			const ele = formD[i]
 
-			form.value[ele.field] = ''
+			// 处理普通字段
+			if (ele.field) {
+				form.value[ele.field] = ''
 
-			if (ele.type === 'timePicker' || ele.type === 'datePicker' || ele.type === 'colorPicker') {
-
-				picker.value[ele.field] = false
-
+				if (ele.type === 'timePicker' || ele.type === 'datePicker' || ele.type === 'colorPicker') {
+					picker.value[ele.field] = false
+				}
 			}
 
+			// 处理fcRow嵌套字段 - 这是关键！
+			if (ele.type === 'fcRow' && ele.children) {
+				for (let j = 0; j < ele.children.length; j++) {
+					const colItem = ele.children[j]
+					if (colItem.type === 'col' && colItem.children) {
+						for (let k = 0; k < colItem.children.length; k++) {
+							const childItem = colItem.children[k]
+							if (childItem.field) {
+								// 初始化嵌套字段到form对象
+								form.value[childItem.field] = ''
+								if (childItem.type === 'timePicker' || childItem.type === 'datePicker' || childItem.type === 'colorPicker') {
+									picker.value[childItem.field] = false
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-
 	}
+
 
 	const getRules = (formD) => {
 
@@ -242,6 +325,8 @@
 		return rules
 
 	}
+
+
 	
 	const setFormValues = (values) => {
 		Object.keys(values).forEach(key => {
@@ -257,6 +342,7 @@
 		getModel(formD)
 
 		getRules(formD)
+        console.log(getRules(formD),'getRules(formD)')
 
 		formRef.value.setRules(rules)
 
@@ -275,7 +361,6 @@
 		if (type === 'timePicker' || type === 'datePicker') {
 
 			picker.value[field] = true
-
 		}
 
 		if (type === 'colorPicker') {
@@ -369,6 +454,41 @@
 
 </script>
 
-<style>
+<style scoped>
+/* 使用深度选择器覆盖uView组件样式 */
 
+:deep(.clickable-cell) {
+	border: 1px solid #e4e7ed !important;
+	border-radius: 4px !important;
+	background-color: #f8f9fa !important;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	padding: 0px 12px;
+}
+
+:deep(.clickable-cell:hover) {
+	background-color: #e9ecef !important;
+	border-color: #409eff !important;
+	box-shadow: 0 2px 4px rgba(64, 158, 255, 0.12) !important;
+}
+
+:deep(.clickable-cell:active) {
+	background-color: #dee2e6 !important;
+	transform: translateY(1px);
+}
+
+/* 禁用状态样式 */
+:deep(.clickable-cell[disabled]) {
+	background-color: #f5f7fa !important;
+	border-color: #e4e7ed !important;
+	color: #c0c4cc !important;
+	cursor: not-allowed;
+}
+
+:deep(.clickable-cell[disabled]:hover) {
+	background-color: #f5f7fa !important;
+	border-color: #e4e7ed !important;
+	box-shadow: none !important;
+	transform: none;
+}
 </style>
