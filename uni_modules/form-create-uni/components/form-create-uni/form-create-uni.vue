@@ -228,7 +228,14 @@
 		return rules
 
 	}
-
+	
+	const setFormValues = (values) => {
+		Object.keys(values).forEach(key => {
+			if (form.value.hasOwnProperty(key)) {
+				form.value[key] = values[key]
+			}
+		})
+	}
 	const showForm = (formD) => {
 
 		rule.value = formD
@@ -344,7 +351,7 @@
 
 	}
 	
-	defineExpose({ showForm, getFormData })
+	defineExpose({ showForm, getFormData ,setFormValues })
 
 </script>
 

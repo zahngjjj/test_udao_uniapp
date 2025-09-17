@@ -1,6 +1,3 @@
-/**
- * author: jian198001@163.com
- */
 <template>
 	<view>
 		<u--form ref="formRef" :model="form" :rules="rules"
@@ -8,8 +5,20 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-
-				<u-form-item :label="item?.title" :prop="item?.field"
+            <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
+			<!-- HTML内容渲染 -->	
+                <view 
+					v-if="item?.type === 'html'" 
+					class="html-content"
+					:style="item?.style"
+					:hidden="item?.hidden"
+					v-show="item?.display !== false">
+					<rich-text 
+						:nodes="item?.children?.[0] || item?.attrs?.innerHTML || ''"
+						:selectable="item?.native || false">
+					</rich-text>
+				</view>	
+            <u-form-item :label="item?.title" :prop="item?.field"
 					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
 					<!-- 计数器 -->
 					<u-number-box v-model="form[item?.field]" v-if="item?.type === 'inputNumber'"
@@ -86,6 +95,13 @@
 					<!-- 富文本框 -->
 					<u--textarea v-model="form[item?.field]" v-else-if="item?.type === 'fc-editor'"
 						:placeholder="item?.props?.placeholder" :disabled="item?.props?.disabled"></u--textarea>
+                    <!-- 多行文本输入 -->
+
+                    <uni-easyinput v-model="form[item?.field]" v-else-if="item?.type === 'input' && item?.props?.type === 'textarea'"
+                        :placeholder="item?.props?.placeholder" :disabled="item?.props?.disabled"
+                        :rows="item?.props?.rows || 3" :maxlength="item?.props?.maxlength"
+                        :showWordLimit="item?.props?.showWordLimit" type="textarea" autoHeight placeholder="请输入内容"></uni-easyinput>
+
 
 					<!-- 上传 -->
 					<u-upload v-model="form[item?.field]" v-else-if="item?.type === 'upload'"
@@ -127,10 +143,8 @@
 </template>
 
 <script  setup name="form-create">
-	import {
-		ref
-	} from 'vue'
-	
+	import { ref } from 'vue'
+
 	defineProps({
 		option: {
 			type: Object,
@@ -174,7 +188,7 @@
 			const ele = formD[i]
 
 			const required = ele?.$required
-			 
+
 			let max = ele?.props?.maxlength
 
 			let min = ele?.props?.minlength
@@ -182,13 +196,13 @@
 			r[(ele.field)] = []
 
 			if (required) {
-				
+
 				let message = required?.toString()
-				 
+
 				if (message === 'true') {
-					 
+
 					message = '请输入内容'
-					
+
 				}
 
 				r[(ele?.field)]?.push({
@@ -228,7 +242,14 @@
 		return rules
 
 	}
-
+	
+	const setFormValues = (values) => {
+		Object.keys(values).forEach(key => {
+			if (form.value.hasOwnProperty(key)) {
+				form.value[key] = values[key]
+			}
+		})
+	}
 	const showForm = (formD) => {
 
 		rule.value = formD
@@ -245,11 +266,9 @@
 
 	const formRef = ref()
 
-	defineExpose({ showForm })
-
 	let fieldPicker = ''
 
-	const showPicker = (field, type) => { 
+	const showPicker = (field, type) => {
 
 		fieldPicker = field
 
@@ -293,6 +312,29 @@
 
 	const emit = defineEmits(['submit'])
 
+	const getFormData = () => {
+
+		const fd = rule.value
+
+		const fo = form.value
+
+		for (let i = 0; i < fd.length; i++) {
+			const ele = fd[i]
+
+			const field = ele.field
+
+			if (fo[field]) {
+
+				ele.values = fo[field]
+
+			}
+
+		}
+
+		return fd
+
+	}
+
 	const submit = async () => {
 
 		formRef.value.validate().then(res => {
@@ -322,6 +364,9 @@
 		});
 
 	}
+	
+	defineExpose({ showForm, getFormData ,setFormValues })
+
 </script>
 
 <style>
