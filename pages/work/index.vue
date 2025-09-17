@@ -75,6 +75,12 @@
             <text class="text">表单测试</text>
           </view>
         </uni-grid-item>
+        <uni-grid-item>
+          <view class="grid-item-box" @click="handleGridClick(10)">
+            <uni-icons type="paperplane-filled" size="30"></uni-icons>
+            <text class="text">发起流程</text>
+          </view>
+        </uni-grid-item>
       </uni-grid>
     </view>
   </view>
@@ -111,6 +117,13 @@ const handleGridClick= (index) =>{
   if (index === 9) {
     uni.navigateTo({
       url: '/pages/formtest'
+    })
+    return
+  }
+  
+  if (index === 10) {
+    uni.navigateTo({
+      url: '/pages/flow/create/list'
     })
     return
   }

@@ -180,8 +180,8 @@
 			</template>
 
 			<u-button type="primary" text="提 交" customStyle="margin-top: 50px" @click="submit"
-				v-if="option?.submitBtn?.show"></u-button>
-
+				v-if="submitBtn"></u-button>
+				
 			<uv-pick-color ref="pickerColorRef" @confirm="confirmColor"></uv-pick-color>
 		</u--form>
 
@@ -194,8 +194,11 @@
 	defineProps({
 		option: {
 			type: Object,
+		},
+		submitBtn:{
+			type:Boolean,
+			default: true,
 		}
-
 	})
 
 	const rule = ref([])

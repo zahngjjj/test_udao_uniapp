@@ -78,6 +78,18 @@
       "style": {
         "navigationBarTitleText": "表单测试"
       }
+    },
+    {
+      "path": "pages/flow/create/list",
+      "style": {
+        "navigationBarTitleText": "发起流程"
+      }
+    },
+    {
+      "path": "pages/flow/create/createForm",
+      "style": {
+        "navigationBarTitleText": "发起流程"
+      }
     }
   ],
   "tabBar": {
