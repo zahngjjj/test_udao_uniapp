@@ -3,6 +3,9 @@
 
         <form-create-uni ref="formCreateRef" :rule="formDetailPreview.rule" :option="formDetailPreview.option" v-model="formDetailPreview.value" @submit="submit"></form-create-uni>
 
+
+		<approval-flow :flow-data="customFlowData" :show-time="true"></approval-flow>
+
         <u-button type="primary" text="获取表单数据" customStyle="margin-top: 50px" @click="getFormData"></u-button>
 
         <br><br><br>
@@ -13,9 +16,31 @@
 <script setup>
     import {ref , onMounted , isRef} from "vue";
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
+	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
 
-
-
+	const customFlowData = [
+		{
+			id: 1,
+			title: '申请人',
+			name: '张三',
+			status: 'completed',
+			time: '2025-01-15 09:00:00'
+		},
+		{
+			id: 2,
+			title: '部门主管',
+			name: '李四',
+			status: 'current',
+			time: ''
+		},
+		{
+			id: 3,
+			title: '总经理',
+			name: '王五',
+			status: 'pending',
+			time: ''
+		}
+	]
     const formCreateRef = ref()
 
     const option = ref({}) // 表单整体属性值，通过组件属性注入
