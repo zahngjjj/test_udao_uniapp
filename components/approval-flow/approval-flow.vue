@@ -24,10 +24,6 @@
 							:bg-color="getAvatarBgColor(item.status)"
 							color="#fff">
 						</u-avatar>
-						<!-- 状态图标 -->
-						<view class="status-icon" v-if="item.status === 'completed'">
-							<u-icon name="checkmark" color="#fff" size="12"></u-icon>
-						</view>
 					</view>
 					
 					<!-- 审批信息 -->

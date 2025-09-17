@@ -14,63 +14,63 @@
     <!-- 宫格组件 -->
     <uni-section title="系统管理" type="line"></uni-section>
     <view class="grid-body">
-      <uni-grid :column="4" :showBorder="false" @change="changeGrid">
+      <uni-grid :column="4" :showBorder="false">
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(0)">
             <uni-icons type="person-filled" size="30"></uni-icons>
             <text class="text">用户管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(1)">
             <uni-icons type="staff-filled" size="30"></uni-icons>
             <text class="text">角色管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(2)">
             <uni-icons type="color" size="30"></uni-icons>
             <text class="text">菜单管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(3)">
             <uni-icons type="settings-filled" size="30"></uni-icons>
             <text class="text">部门管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(4)">
             <uni-icons type="heart-filled" size="30"></uni-icons>
             <text class="text">岗位管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(5)">
             <uni-icons type="bars" size="30"></uni-icons>
             <text class="text">字典管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(6)">
             <uni-icons type="gear-filled" size="30"></uni-icons>
             <text class="text">参数设置</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(7)">
             <uni-icons type="chat-filled" size="30"></uni-icons>
             <text class="text">通知公告</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box">
+          <view class="grid-item-box" @click="handleGridClick(8)">
             <uni-icons type="wallet-filled" size="30"></uni-icons>
             <text class="text">日志管理</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
-          <view class="grid-item-box" @click="goToFormTest">
+          <view class="grid-item-box" @click="handleGridClick(9)">
             <uni-icons type="compose" size="30"></uni-icons>
             <text class="text">表单测试</text>
           </view>
@@ -107,19 +107,20 @@ const changeSwiper = (e) => {
   current.value = e.detail.current
 }
 
-const changeGrid = (e) =>{
-  console.log(e,'eee')
+const handleGridClick= (index) =>{
+  if (index === 9) {
+    uni.navigateTo({
+      url: '/pages/formtest'
+    })
+    return
+  }
+  
   uni.showToast({
     title: '模块建设中~',
     icon: 'none'
   })
 }
 
-const goToFormTest = () => {
-  uni.navigateTo({
-    url: '/pages/formtest'
-  })
-}
 </script>
 
 <style lang="scss">
