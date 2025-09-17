@@ -33,30 +33,11 @@
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
 	import { getProcessDefinition } from '@/api/definition/index.js'
-  import { createProcessInstance } from '@/api/processInstance/index.js'
-	const customFlowData = [
-		{
-			id: 1,
-			title: '申请人',
-			name: '张三',
-			status: 'completed',
-			time: '2025-01-15 09:00:00'
-		},
-		{
-			id: 2,
-			title: '部门主管',
-			name: '李四',
-			status: 'current',
-			time: ''
-		},
-		{
-			id: 3,
-			title: '总经理',
-			name: '王五',
-			status: 'pending',
-			time: ''
-		}
-	]
+import { createProcessInstance, getApprovalDetail } from '@/api/processInstance/index.js'
+
+const customFlowData = ref([])
+
+
   const formCreateRef = ref()
   const formDetailPreview = ref({
     rule: [],
@@ -104,6 +85,83 @@ const loadProcessDefinition = async (id) => {
 }
 
 
+// 获取审批详情和流程数据
+const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUserNode') => {
+  try {
+    const params = {
+      processDefinitionId: processDefinitionId,
+      activityId: activityId
+    }
+    
+    console.log('请求参数:', params)
+    
+    const response = await getApprovalDetail(params)
+    console.log('getApprovalDetail 响应:', response)
+    
+    if (response && response.code === 0 && response.data) {
+      const { activityNodes } = response.data
+      
+      // 将 activityNodes 转换为 customFlowData 格式
+      if (activityNodes && activityNodes.length > 0) {
+        customFlowData.value = activityNodes.map((node, index) => {
+          // 根据节点状态设置流程状态
+          let status = 'pending'
+          if (node.status === 1) {
+            status = 'completed'
+          } else if (node.status === 0) {
+            status = 'current'
+          }
+          
+          // 根据节点类型设置名称和头像
+          let name = ''
+          let avatar = ''
+          
+          // 判断节点类型
+          if (node.nodeType === 10) {
+            // 发起人节点
+            name = '发起人'
+          } else if (node.nodeType === 1) {
+            // 结束节点
+            name = '结束'
+          } else if (node.candidateUsers && node.candidateUsers.length > 0) {
+            // 审批节点，有候选用户
+            name = node.candidateUsers.map(user => user.nickname).join(', ')
+            // 如果有头像，使用第一个用户的头像
+            if (node.candidateUsers[0].avatar) {
+              avatar = node.candidateUsers[0].avatar
+            }
+          } else {
+            // 其他情况显示待分配
+            name = '待分配'
+          }
+          
+          return {
+            id: index + 1,
+            title: node.name || '未知节点',
+            name: name,
+            avatar: avatar,
+            status: status,
+            time: node.startTime || ''
+          }
+        })
+      }
+      
+      return response.data
+    } else {
+      console.error('获取审批详情失败:', response)
+      uni.showToast({
+        title: '获取审批详情失败',
+        icon: 'error'
+      })
+    }
+  } catch (error) {
+    console.error('获取审批详情异常:', error)
+    uni.showToast({
+      title: '获取审批详情异常',
+      icon: 'error'
+    })
+  }
+}
 
 
 
@@ -199,7 +257,7 @@ const loadProcessDefinition = async (id) => {
 
 
     /** 初始化 **/
-  onLoad((options) => {
+  onLoad(async (options) => {
 
         // 表单整体属性值，通过组件属性注入
         // option.value = { "form": { "labelPosition": "right", "size": "small", "labelWidth": "125px", "hideRequiredAsterisk": true, "showMessage": true, "inlineMessage": false }, "submitBtn": { "show": true, "innerText": "提交" }, "resetBtn": { "show": true, "innerText": "重置" } }
@@ -211,7 +269,7 @@ const loadProcessDefinition = async (id) => {
 
     loadProcessDefinition(options.id)
 
-
+    await getApprovalDetailData(options.id)
 
         // formCreateRef.value.showForm(rule)
 
