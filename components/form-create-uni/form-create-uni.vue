@@ -181,7 +181,7 @@
 
 			<u-button type="primary" text="提 交" customStyle="margin-top: 50px" @click="submit"
 				v-if="submitBtn"></u-button>
-				
+
 			<uv-pick-color ref="pickerColorRef" @confirm="confirmColor"></uv-pick-color>
 		</u--form>
 
@@ -402,24 +402,24 @@
 
 	const getFormData = () => {
 
-		const fd = rule.value
-
+	const formData = {}
 		const fo = form.value
-
-		for (let i = 0; i < fd.length; i++) {
-			const ele = fd[i]
-
-			const field = ele.field
-
-			if (fo[field]) {
-
-				ele.values = fo[field]
-
+		
+		// 遍历表单数据，构建键值对对象
+		for (const field in fo) {
+			const value = fo[field]
+			
+			// 剔除空数据：null、undefined、空字符串、空数组
+			if (value !== null && 
+				value !== undefined && 
+				value !== '' && 
+				!(Array.isArray(value) && value.length === 0)) {
+				formData[field] = value
 			}
-
 		}
-
-		return fd
+		
+		
+		return formData
 
 	}
 
