@@ -174,7 +174,7 @@ const handleToSetting = () => {
 
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 page {
   background-color: #f5f6f7;
 }

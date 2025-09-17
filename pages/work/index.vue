@@ -123,7 +123,7 @@ const handleGridClick= (index) =>{
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 /* #ifndef APP-NVUE */
 page {
   display: flex;

@@ -52,7 +52,7 @@ const url = ref(config.appInfo.site_url)
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 page {
   background-color: #f8f8f8;
 }
