@@ -283,6 +283,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 .content {
 	padding: 12px;
 	padding-bottom: 100px; /* 为底部按钮留出空间 */
+  background: #ffffff; /* 改为完全不透明的白色背景 */
 }
 
 /* 底部按钮容器 */
