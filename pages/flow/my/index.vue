@@ -447,14 +447,15 @@ onMounted(() => {
 
 // 重新发起流程
 const handleRestart = (item) => {
+ console.log(item,'item')
   uni.showModal({
     title: '重新发起',
     content: '确定要重新发起该流程吗？',
     success: (res) => {
       if (res.confirm) {
         // 跳转到创建页面，并传入原流程信息
-        uni.navigateTo({
-          url: `/pages/flow/create/index?processDefinitionId=${item.processDefinitionId}&restart=true&originalId=${item.id}`
+       uni.navigateTo({
+          url: `/pages/flow/create/createForm?processDefinitionId=${item.processDefinitionId}&id=${item.id}&reset=true`
         })
       }
     }
