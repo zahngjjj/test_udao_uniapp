@@ -16,21 +16,27 @@
 				
 				<!-- 审批节点 -->
 				<view class="flow-node">
-					<view class="node-avatar">
-						<u-avatar 
-							:src="item.avatar" 
-							:text="item.name.charAt(0)"
-							size="40"
-							:bg-color="getAvatarBgColor(item.status)"
-							color="#fff">
-						</u-avatar>
-					</view>
-					
-					<!-- 审批信息 -->
-					<view class="node-info">
-						<view class="node-title">{{ item.title }}</view>
-						<view class="node-name">{{ item.name }}</view>
-						<view class="node-time" v-if="item.time">{{ item.time }}</view>
+					<view class="node-content">
+						<view class="node-avatar">
+							<u-avatar 
+								:src="item.avatar" 
+								:text="item.name.charAt(0)"
+								size="32"
+								:bg-color="getAvatarBgColor(item.status)"
+								color="#fff">
+							</u-avatar>
+							<!-- 状态图标 -->
+							<view class="status-icon" v-if="item.status === 'completed'">
+								<u-icon name="checkmark" color="#fff" size="10"></u-icon>
+							</view>
+						</view>
+						
+						<!-- 审批信息 -->
+						<view class="node-info">
+							<view class="node-title">{{ item.title }}</view>
+							<view class="node-name">{{ item.name }}</view>
+							<view class="node-time" v-if="item.time && showTime">{{ item.time }}</view>
+						</view>
 					</view>
 				</view>
 				
@@ -120,8 +126,10 @@ defineExpose({
 .flow-container {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	gap: 0;
+	position: relative;
 }
+
 /* 标题样式 */
 .flow-header {
 	margin-bottom: 30rpx;
@@ -141,34 +149,25 @@ defineExpose({
 .flow-item {
 	position: relative;
 	display: flex;
-	align-items: flex-start;
-	padding: 20rpx;
-	border-radius: 12rpx;
-	background-color: #f8f9fa;
+	align-items: center;
+	padding: 20rpx 0;
 	transition: all 0.3s ease;
-}
-
-.flow-item.completed {
-	background-color: #f0f9ff;
-	border-left: 4rpx solid #5cb85c;
-}
-
-.flow-item.current {
-	background-color: #fff3cd;
-	border-left: 4rpx solid #5bc0de;
-	box-shadow: 0 2rpx 8rpx rgba(91, 192, 222, 0.2);
-}
-
-.flow-item.pending {
-	background-color: #f8f9fa;
-	border-left: 4rpx solid #dee2e6;
 }
 
 .flow-node {
 	display: flex;
-	align-items: flex-start;
-	gap: 24rpx;
+	align-items: center;
 	width: 100%;
+	position: relative;
+	z-index: 2;
+}
+
+.node-content {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	background-color: #fff;
+	padding: 0 10rpx;
 }
 
 .node-avatar {
@@ -178,10 +177,10 @@ defineExpose({
 
 .status-icon {
 	position: absolute;
-	bottom: -4rpx;
-	right: -4rpx;
-	width: 24rpx;
-	height: 24rpx;
+	bottom: -2rpx;
+	right: -2rpx;
+	width: 20rpx;
+	height: 20rpx;
 	background-color: #5cb85c;
 	border-radius: 50%;
 	display: flex;
@@ -191,35 +190,35 @@ defineExpose({
 }
 
 .node-info {
-	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 8rpx;
+	gap: 4rpx;
 }
 
 .node-title {
-	font-size: 28rpx;
+	font-size: 26rpx;
 	font-weight: 600;
 	color: #333;
 }
 
 .node-name {
-	font-size: 26rpx;
+	font-size: 24rpx;
 	color: #666;
 }
 
 .node-time {
-	font-size: 24rpx;
+	font-size: 22rpx;
 	color: #999;
 }
 
 .flow-line {
 	position: absolute;
-	left: 50rpx;
-	bottom: -20rpx;
+	left: 26rpx;
+	top: 50%;
 	width: 2rpx;
-	height: 20rpx;
-	background-color: #dee2e6;
+	height: 100%;
+	background-color: #e5e5e5;
+	z-index: 1;
 }
 
 .flow-item.completed .flow-line {
@@ -227,6 +226,10 @@ defineExpose({
 }
 
 .flow-item.current .flow-line {
-	background-color: #5bc0de;
+	background-color: #409eff;
+}
+
+.flow-item:last-child .flow-line {
+	display: none;
 }
 </style>

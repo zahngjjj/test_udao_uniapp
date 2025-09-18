@@ -104,6 +104,12 @@
       }
     },
     {
+      "path": "pages/flow/detail/index",
+      "style": {
+        "navigationBarTitleText": "任务详情"
+      }
+    },
+    {
       "path": "pages/flow/task/detail",
       "style": {
         "navigationBarTitleText": "任务详情"

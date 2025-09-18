@@ -228,17 +228,12 @@ const getSummaryText = (item) => {
 
 // 处理任务
 const handleProcess = (item) => {
+  console.log(item,'item')
   uni.navigateTo({
-    url: `/pages/flow/detail/index?id=${item.processInstanceId}&taskId=${item.id}&type=todo`
+    url: `/pages/flow/task/detail?processInstanceId=${item.processInstanceId}&taskId=${item.id}&reset=true&type=todo`
   })
 }
 
-// 查看详情
-const handleViewDetail = (item) => {
-  uni.navigateTo({
-    url: `/pages/flow/detail/index?id=${item.processInstanceId}&taskId=${item.id}&type=view`
-  })
-}
 
 // 页面加载
 onMounted(() => {
