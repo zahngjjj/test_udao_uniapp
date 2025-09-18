@@ -96,6 +96,18 @@
       "style": {
         "navigationBarTitleText": "我的流程"
       }
+    },
+    {
+      "path": "pages/flow/task/waitDone",
+      "style": {
+        "navigationBarTitleText": "待办任务"
+      }
+    },
+    {
+      "path": "pages/flow/task/detail",
+      "style": {
+        "navigationBarTitleText": "任务详情"
+      }
     }
   ],
   "tabBar": {

@@ -87,6 +87,12 @@
             <text class="text">我的流程</text>
           </view>
         </uni-grid-item>
+        <uni-grid-item>
+          <view class="grid-item-box" @click="handleGridClick(12)">
+            <uni-icons type="person-filled" size="30"></uni-icons>
+            <text class="text">待办任务</text>
+          </view>
+        </uni-grid-item>
       </uni-grid>
     </view>
   </view>
@@ -137,6 +143,12 @@ const handleGridClick= (index) =>{
   if (index === 11) {
     uni.navigateTo({
       url: '/pages/flow/my/index'
+    })
+    return
+  }
+  if (index === 12) {
+    uni.navigateTo({
+      url: '/pages/flow/task/waitDone'
     })
     return
   }

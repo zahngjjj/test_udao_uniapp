@@ -93,10 +93,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
       activityId: activityId
     }
     
-    console.log('请求参数:', params)
-    
     const response = await getApprovalDetail(params)
-    console.log('getApprovalDetail 响应:', response)
     
     if (response && response.code === 0 && response.data) {
       const { activityNodes } = response.data
@@ -169,13 +166,11 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 const loadProcessInstanceData = async (id) => {
   try {
     const response = await getProcessInstance(id)
-    console.log(response,'rresd')
     if (response && response.data) {
       const processInstanceData = response.data
       
       // 如果接口返回的数据包含表单变量
 
-      console.log('获取流程实例数据:', processInstanceData)
       if (processInstanceData.formVariables) {
         formDetailPreview.value.value = processInstanceData.formVariables
         
@@ -202,7 +197,6 @@ const loadProcessInstanceData = async (id) => {
         try {
             // 获取表单数据
             const formData = formCreateRef.value.getFormData()
-            console.log('提交表单数据:', JSON.stringify(formData))
             
             // 获取路由参数中的流程定义ID
             const pages = getCurrentPages()
@@ -225,11 +219,9 @@ const loadProcessInstanceData = async (id) => {
                 startUserSelectAssignees: {}
             }
             
-            console.log('发起流程请求参数:', JSON.stringify(requestData))
             
             // 调用创建流程实例接口
             const response = await createProcessInstance(requestData)
-            console.log(response,'response')
             
             if (response && response.code === 0) {
                 uni.showToast({
@@ -284,7 +276,6 @@ const loadProcessInstanceData = async (id) => {
 
 
 onLoad(async (options) => {
-  console.log(options,'options')
     if (options.reset === 'true' && options.id) {
         // 重新发起流程，先加载流程定义，再加载原流程实例数据
         await loadProcessDefinition(options.processDefinitionId)
