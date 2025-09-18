@@ -81,6 +81,12 @@
             <text class="text">发起流程</text>
           </view>
         </uni-grid-item>
+        <uni-grid-item>
+          <view class="grid-item-box" @click="handleGridClick(11)">
+            <uni-icons type="person-filled" size="30"></uni-icons>
+            <text class="text">我的流程</text>
+          </view>
+        </uni-grid-item>
       </uni-grid>
     </view>
   </view>
@@ -127,7 +133,13 @@ const handleGridClick= (index) =>{
     })
     return
   }
-  
+    
+  if (index === 11) {
+    uni.navigateTo({
+      url: '/pages/flow/my/index'
+    })
+    return
+  }
   uni.showToast({
     title: '模块建设中~',
     icon: 'none'

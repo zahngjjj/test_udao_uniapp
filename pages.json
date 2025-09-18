@@ -90,6 +90,12 @@
       "style": {
         "navigationBarTitleText": "发起流程"
       }
+    },
+    {
+      "path": "pages/flow/my/index",
+      "style": {
+        "navigationBarTitleText": "我的流程"
+      }
     }
   ],
   "tabBar": {
