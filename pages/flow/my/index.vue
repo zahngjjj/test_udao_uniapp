@@ -393,25 +393,45 @@ const handleViewDetail = (item) => {
   })
 }
 
+
 // 撤销流程
 const handleCancel = (item) => {
+  // 使用 uni.showModal 的 editable 属性来实现输入框
   uni.showModal({
-    title: '确认撤销',
-    content: '确定要撤销该流程吗？',
+    title: '取消流程',
+    content: '',
+    editable: true,
+    placeholderText: '请输入取消原因',
     success: async (res) => {
       if (res.confirm) {
-        try {
-          await cancelProcessInstanceByStartUser(item.id, '用户主动撤销')
+        const reason = res.content || '用户主动取消'
+        
+        if (!reason.trim()) {
           uni.showToast({
-            title: '撤销成功',
+            title: '请输入取消原因',
+            icon: 'none'
+          })
+          return
+        }
+        
+        try {
+          // 按照您提供的参数格式调用接口
+          await cancelProcessInstanceByStartUser({
+            id: item.id,
+            reason: reason.trim()
+          })
+          
+          uni.showToast({
+            title: '取消成功',
             icon: 'success'
           })
+          
           // 刷新列表
           getProcessList(true)
         } catch (error) {
-          console.error('撤销失败:', error)
+          console.error('取消失败:', error)
           uni.showToast({
-            title: '撤销失败',
+            title: '取消失败',
             icon: 'error'
           })
         }

@@ -24,11 +24,7 @@ export const createProcessInstance = async (data) => {
   })
 }
 
-export const cancelProcessInstanceByStartUser = async (id, reason) => {
-  const data = {
-    id: id,
-    reason: reason
-  }
+export const cancelProcessInstanceByStartUser = async (data) => {
   return await request({
     url: '/bpm/process-instance/cancel-by-start-user',
     method: 'DELETE',
