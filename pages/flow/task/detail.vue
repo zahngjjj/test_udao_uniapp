@@ -1,8 +1,9 @@
 <template>
     <view class="content"> 
-
         <form-create-uni ref="formCreateRef"  :submitBtn="false" :rule="formDetailPreview.rule" :option="formDetailPreview.option" v-model="formDetailPreview.value"></form-create-uni>
-
+       
+        <status :status="processStatus"></status>
+        
         <view class="button-container">
             <view class="button-wrapper">
                 <button class="action-button submit-button" @click="handleSubmit">
@@ -32,10 +33,13 @@
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
     import { createProcessInstance, getApprovalDetail  } from '@/api/processInstance/index.js'
-
+import Status from './status.vue'
 
 const customFlowData = ref([])
 
+
+// 添加流程状态数据
+const processStatus = ref(null)
 
 const formCreateRef = ref()
 const formDetailPreview = ref({
@@ -56,7 +60,10 @@ const getApprovalDetailData = async (processInstanceId, taskId) => {
     
     if (response && response.code === 0 && response.data) {
       const { activityNodes,processDefinition,processInstance } = response.data
-      
+         // 设置流程状态
+      if (processInstance && processInstance.status) {
+        processStatus.value = processInstance.status
+      }
       // 将 activityNodes 转换为 customFlowData 格式
      showFlower(activityNodes)
 
