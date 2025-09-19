@@ -96,7 +96,7 @@
             <!-- 卡片底部操作 -->
             <view class="card-actions">
               <u-button 
-                text="查看详情" 
+                text="历史" 
                 type="info" 
                 size="small"
                 style="color:#409EFF"
