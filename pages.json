@@ -126,6 +126,12 @@
       "style": {
         "navigationBarTitleText": "已办任务"
       }
+    },
+    {
+      "path": "pages/flow/task/copy",
+      "style": {
+        "navigationBarTitleText": "抄送我的"
+      }
     }
   ],
   "tabBar": {

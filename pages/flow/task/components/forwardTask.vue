@@ -140,10 +140,10 @@ const getTaskIdFromRoute = () => {
   
   if (!taskId.value) {
     console.error('未能从路由获取taskId')
-    uni.showToast({
-      title: '参数错误',
-      icon: 'error'
-    })
+    // uni.showToast({
+    //   title: '参数错误',
+    //   icon: 'error'
+    // })
   }
 }
 
