@@ -99,6 +99,7 @@
                 text="查看详情" 
                 type="info" 
                 size="small"
+                style="color:#409EFF"
                 @click="handleViewDetail(item)"
               ></u-button>
             </view>
