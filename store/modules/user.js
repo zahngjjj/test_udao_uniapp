@@ -66,7 +66,7 @@ export const user = defineStore({
                 getInfo().then(res => {
                     res = res.data; // 读取 data 数据
                     const user = res.user
-                    const avatar = (user == null || user.avatar === "" || user.avatar == null) ? require("@/static/images/profile.jpg") : user.avatar
+                    const avatar = (user == null || user.avatar === "" || user.avatar == null) ? '' : user.avatar
                     const nickname = (user == null || user.nickname === "" || user.nickname == null) ? "" : user.nickname
                     if (res.roles && res.roles.length > 0) {
                         this.SET_ROLES(res.roles)
