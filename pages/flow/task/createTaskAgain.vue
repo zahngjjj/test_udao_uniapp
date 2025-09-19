@@ -127,7 +127,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 
 
 
-const loadProcessInstanceDataToALL = async (id) => {
+const loadProcessInstanceDataToALL = async (id,activityId) => {
   try {
     const response = await getProcessInstance(id)
     if (response && response.data) {
@@ -136,7 +136,7 @@ const loadProcessInstanceDataToALL = async (id) => {
       processInstanceId.value = processInstanceData.processDefinitionId
 
       if(processInstanceData .processDefinitionId) {
-         await getApprovalDetailData(processInstanceData .processDefinitionId)
+         await getApprovalDetailData(processInstanceData.processDefinitionId,activityId)
       }
       
       // 从 processDefinition 中获取表单配置和字段
@@ -268,7 +268,7 @@ const loadProcessInstanceDataToALL = async (id) => {
 
 
 onLoad(async (options) => {
-  await loadProcessInstanceDataToALL(options.id)
+  await loadProcessInstanceDataToALL(options.id,options.activityId)
 })
 </script>
 
