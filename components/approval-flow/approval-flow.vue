@@ -49,7 +49,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-
+import { formatTime } from '@/utils/common.js'
 // Props定义
 const props = defineProps({
 	// 审批流程数据
@@ -94,7 +94,14 @@ const defaultFlowList = [
 
 // 计算流程列表
 const flowList = computed(() => {
-	return props.flowData.length > 0 ? props.flowData : defaultFlowList
+	const data = props.flowData.length > 0 ? props.flowData : defaultFlowList
+	// 对时间字段进行格式化处理
+	return data.map(item => ({
+		...item,
+		time: item.time ? formatTime(item.time) : '',
+		startTime: item.startTime ? formatTime(item.startTime) : '',
+		endTime: item.endTime ? formatTime(item.endTime) : ''
+	}))
 })
 
 // 获取头像背景色

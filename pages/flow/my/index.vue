@@ -394,7 +394,7 @@ const handleViewDetail = (item) => {
     const processInstanceId= res.data.tasks[0].processInstanceId;
     const taskId= res.data.tasks[0].id;
     uni.navigateTo({
-      url: `/pages/flow/my/detail?processInstanceId=${processInstanceId}&taskId=${taskId}&reset=true&type=todo`
+      url: `/pages/flow/my/detail?processInstanceId=${processInstanceId}&taskId=${taskId}`
     })
   })
   // uni.navigateTo({

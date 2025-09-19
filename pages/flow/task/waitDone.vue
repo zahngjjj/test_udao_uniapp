@@ -230,7 +230,7 @@ const getSummaryText = (item) => {
 const handleProcess = (item) => {
   console.log(item,'item')
   uni.navigateTo({
-    url: `/pages/flow/task/detail?processInstanceId=${item.processInstanceId}&taskId=${item.id}&reset=true&type=todo`
+    url: `/pages/flow/task/detail?processInstanceId=${item.processInstanceId}&taskId=${item.id}`
   })
 }
 
