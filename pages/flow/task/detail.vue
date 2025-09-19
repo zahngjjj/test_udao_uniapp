@@ -4,23 +4,13 @@
        
         <status :status="processStatus"></status>
         
-        <view class="button-container">
-            <view class="button-wrapper">
-                <button class="action-button submit-button" @click="handleSubmit">
-                    <text class="button-icon">✓</text>
-                    <text class="button-text">发起</text>
-                </button>
-                <button class="action-button cancel-button" @click="handleCancel">
-                    <text class="button-icon">✕</text>
-                    <text class="button-text">取消</text>
-                </button>
-            </view>
-        </view>
+        <buttongroup 
+          :status="processStatus"
+        ></buttongroup>
 
 		<approval-flow :flow-data="customFlowData" :show-time="true" style="margin-top: 20px;"></approval-flow>
 
         <!-- <u-button type="primary" text="获取表单数据" customStyle="margin-top: 50px" @click="getFormData"></u-button> -->
-
 
     </view>
 </template>
@@ -33,7 +23,8 @@
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
     import { createProcessInstance, getApprovalDetail  } from '@/api/processInstance/index.js'
-import Status from './status.vue'
+    import Status from './components/status.vue'
+    import Buttongroup from './components/buttongroup.vue'
 
 const customFlowData = ref([])
 
@@ -227,81 +218,6 @@ const showForm = (processDefinition,processInstance) => {
 }
 
 
-    const handleSubmit = async () => {
-        try {
-            // 获取表单数据
-            const formData = formCreateRef.value.getFormData()
-            
-            // 获取路由参数中的流程定义ID
-            const pages = getCurrentPages()
-            const currentPage = pages[pages.length - 1]
-            const options = currentPage.options
-            const processDefinitionId = options.id
-            
-            if (!processDefinitionId) {
-                uni.showToast({
-                    title: '流程定义ID不能为空',
-                    icon: 'error'
-                })
-                return
-            }
-            
-            // 构造请求参数
-            const requestData = {
-                processDefinitionId: processDefinitionId,
-                variables: formData,
-                startUserSelectAssignees: {}
-            }
-            
-            
-            // 调用创建流程实例接口
-            const response = await createProcessInstance(requestData)
-            
-            if (response && response.code === 0) {
-                uni.showToast({
-                    title: '流程发起成功',
-                    icon: 'success'
-                })
-                
-                // 延迟返回上一页
-                setTimeout(() => {
-                    uni.navigateBack()
-                }, 1500)
-            } else {
-                uni.showToast({
-                    title: response.msg || '流程发起失败',
-                    icon: 'error'
-                })
-            }
-        } catch (error) {
-            console.error('发起流程失败:', error)
-            uni.showToast({
-                title: '发起流程失败',
-                icon: 'error'
-            })
-        }
-    }
-
-
-    const handleCancel = () => {
-        // 取消操作，返回上一页或清空表单
-        uni.showModal({
-            title: '确认取消',
-            content: '确定要取消当前操作吗？',
-            success: (res) => {
-                if (res.confirm) {
-                    uni.navigateBack()
-                }
-            }
-        })
-    }
-
-
-
-
-
-
-
 onLoad(async (options) => {
     await getApprovalDetailData(options.processInstanceId,options.taskId)
 })
@@ -310,101 +226,10 @@ onLoad(async (options) => {
 <style scoped>
 .content {
 	padding: 12px;
-	padding-bottom: 100px; /* 为底部按钮留出空间 */
+	padding-bottom: 150px; /* 为底部按钮留出空间 */
   background: #ffffff; /* 改为完全不透明的白色背景 */
 }
 
-/* 底部按钮容器 */
-.button-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #ffffff; /* 改为完全不透明的白色背景 */
-    padding: 20rpx 32rpx 40rpx 32rpx;
-    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
-    z-index: 999;
-    /* 添加边框来增强分离效果 */
-    border-top: 1rpx solid #f0f0f0;
-}
 
-.button-wrapper {
-    display: flex;
-    gap: 24rpx;
-    justify-content: center;
-}
 
-/* 按钮基础样式 */
-.action-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8rpx;
-    padding: 16rpx 32rpx;
-    border-radius: 8rpx;
-    border: 2rpx solid;
-    font-size: 28rpx;
-    font-weight: 500;
-    min-width: 120rpx;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-/* 发起按钮样式 */
-.submit-button {
-    background: #e8f5e8;
-    border-color: #52c41a;
-    color: #52c41a;
-}
-
-.submit-button:hover {
-    background: #d9f7be;
-    transform: translateY(-2rpx);
-}
-
-.submit-button:active {
-    background: #b7eb8f;
-    transform: translateY(0);
-}
-
-/* 取消按钮样式 */
-.cancel-button {
-    background: #fff2f0;
-    border-color: #ff4d4f;
-    color: #ff4d4f;
-}
-
-.cancel-button:hover {
-    background: #ffece8;
-    transform: translateY(-2rpx);
-}
-
-.cancel-button:active {
-    background: #ffd8d2;
-    transform: translateY(0);
-}
-
-/* 按钮图标样式 */
-.button-icon {
-    font-size: 24rpx;
-    font-weight: bold;
-}
-
-/* 按钮文字样式 */
-.button-text {
-    font-size: 28rpx;
-}
-
-/* 响应式设计 */
-@media (max-width: 750rpx) {
-    .button-wrapper {
-        gap: 16rpx;
-    }
-    
-    .action-button {
-        padding: 14rpx 24rpx;
-        font-size: 26rpx;
-        min-width: 100rpx;
-    }
-}
 </style>
