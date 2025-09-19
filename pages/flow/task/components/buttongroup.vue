@@ -60,6 +60,8 @@
     />
     <!-- 委派组件 -->
     <DelegateTask ref="delegateTaskRef" @success="handleDelegateSuccess" />
+      <!-- 加签组件 -->
+    <addTask ref="addTaskRef" @success="handleSuccess" @cancel="handleCancel" />
   </view>
 </template>
 
@@ -69,6 +71,7 @@ import { approveTask, rejectTask } from '@/api/task/index'
 import CopyTask from './copyTask.vue'
 import ForwardTask from './forwardTask.vue'
 import DelegateTask from './delegateTask.vue'
+import addTask from './addTask.vue'
 // Props
 const props = defineProps({
   status: {
@@ -90,7 +93,7 @@ const loading = ref(false)
 const copyTaskRef = ref(null)
 const forwardTaskRef = ref(null)
 const delegateTaskRef = ref(null)
-
+const addTaskRef = ref(null)
 // 显示消息提示
 const showMessage = (message, type = 'success') => {
   uni.showToast({
@@ -182,10 +185,7 @@ const handleForward = async () => {
 
 // 加签
 const handleAdd = async () => {
-  const confirmed = await showConfirm('确认操作', '确定要加签此任务吗？')
-  if (!confirmed) return
-  
-  showMessage('加签功能开发中', 'error')
+  addTaskRef.value?.show()
 }
 
 // 退回
