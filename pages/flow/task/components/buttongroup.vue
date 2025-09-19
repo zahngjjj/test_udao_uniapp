@@ -67,7 +67,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { approveTask, rejectTask } from '@/api/task/index'
+import { approveTask, rejectTask ,getTaskListByReturn} from '@/api/task/index'
 import CopyTask from './copyTask.vue'
 import ForwardTask from './forwardTask.vue'
 import DelegateTask from './delegateTask.vue'
@@ -188,12 +188,71 @@ const handleAdd = async () => {
   addTaskRef.value?.show()
 }
 
+
 // 退回
 const handleReturn = async () => {
   const confirmed = await showConfirm('确认操作', '确定要退回此任务吗？')
   if (!confirmed) return
   
-  showMessage('退回功能开发中', 'error')
+  try {
+    loading.value = true
+    
+    // 获取任务ID，优先从props获取，其次从路由获取
+    let taskId = props.taskId
+    if (!taskId) {
+      const pages = getCurrentPages()
+      const currentPage = pages[pages.length - 1]
+      const options = currentPage.options || {}
+      taskId = options.taskId || options.id || ''
+    }
+    
+    if (!taskId) {
+      showMessage('任务ID不能为空', 'error')
+      return
+    }
+    
+    // 调用接口获取可退回的节点
+    const response = await getTaskListByReturn(taskId)
+    
+
+    
+    // 检查返回的数据
+    if (response && response.code === 0) {
+      const returnNodes = response.data || []
+      
+      if (returnNodes.length === 0) {
+        showMessage('当前没有可退回的节点', 'error')
+        return
+      }
+      
+      // 如果有可退回的节点，这里可以继续实现选择退回节点的逻辑
+      // 暂时显示成功信息，表示找到了可退回的节点
+      showMessage(`找到 ${returnNodes.length} 个可退回的节点`, 'success')
+      
+      // TODO: 这里可以继续实现选择具体退回节点的弹框逻辑
+      
+    } else {
+      showMessage('获取可退回节点失败', 'error')
+    }
+    
+  } catch (error) {
+    console.error('退回操作失败:', error)
+    
+    // 获取API返回的具体错误信息
+    let errorMessage = '退回操作失败'
+    
+    if (error && error.msg) {
+      errorMessage = error.msg
+    } else if (error && error.message) {
+      errorMessage = error.message
+    } else if (error && error.data && error.data.msg) {
+      errorMessage = error.data.msg
+    }
+    
+    showMessage(errorMessage, 'error')
+  } finally {
+    loading.value = false
+  }
 }
 
 // 取消
