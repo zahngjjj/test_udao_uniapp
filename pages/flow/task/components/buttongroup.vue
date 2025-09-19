@@ -52,6 +52,14 @@
       @success="handleCopySuccess"
       @cancel="handleCopyCancel"
     />
+    <!-- 转办组件 -->
+     <forward-task 
+      ref="forwardTaskRef"
+      @success="handleForwardSuccess"
+      @cancel="handleForwardCancel"
+    />
+    <!-- 委派组件 -->
+    <DelegateTask ref="delegateTaskRef" @success="handleDelegateSuccess" />
   </view>
 </template>
 
@@ -59,7 +67,8 @@
 import { ref } from 'vue'
 import { approveTask, rejectTask } from '@/api/task/index'
 import CopyTask from './copyTask.vue'
-
+import ForwardTask from './forwardTask.vue'
+import DelegateTask from './delegateTask.vue'
 // Props
 const props = defineProps({
   status: {
@@ -79,6 +88,8 @@ const props = defineProps({
 // 响应式数据
 const loading = ref(false)
 const copyTaskRef = ref(null)
+const forwardTaskRef = ref(null)
+const delegateTaskRef = ref(null)
 
 // 显示消息提示
 const showMessage = (message, type = 'success') => {
@@ -165,19 +176,9 @@ const handleCopy = () => {
 
 // 转办
 const handleForward = async () => {
-  const confirmed = await showConfirm('确认操作', '确定要转办此任务吗？')
-  if (!confirmed) return
-  
-  showMessage('转办功能开发中', 'error')
+   forwardTaskRef.value?.show()
 }
 
-// 委派
-const handleDelegate = async () => {
-  const confirmed = await showConfirm('确认操作', '确定要委派此任务吗？')
-  if (!confirmed) return
-  
-  showMessage('委派功能开发中', 'error')
-}
 
 // 加签
 const handleAdd = async () => {
@@ -229,6 +230,20 @@ const handleResubmit = () => {
     console.error('跳转失败:', error)
     showMessage('跳转失败：' + (error.message || '未知错误'), 'error')
   }
+}
+
+// 在委派按钮点击事件中调用
+const handleDelegate = () => {
+  delegateTaskRef.value?.show()
+}
+
+const handleDelegateSuccess = () => {
+  // 委派成功后的处理逻辑
+  uni.showToast({
+    title: '委派成功',
+    icon: 'success'
+  })
+  // 可以刷新页面或执行其他操作
 }
 
 const handleCopySuccess = () => {
