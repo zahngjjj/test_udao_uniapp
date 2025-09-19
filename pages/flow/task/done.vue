@@ -36,6 +36,12 @@
 
             <!-- 任务信息 -->
             <view class="task-info">
+              
+              <view class="info-row" >
+                <u-icon name="bookmark" size="14" color="#909399"></u-icon>
+                <text class="info-label">流程：</text>
+                <text class="info-value">{{ item.processInstance?.name }}</text>
+              </view>
               <view class="info-row">
                 <u-icon name="account-fill" size="14" color="#409EFF"></u-icon>
                 <text class="info-label">发起人：</text>
@@ -45,13 +51,13 @@
               <view class="info-row">
                 <u-icon name="clock" size="14" color="#67C23A"></u-icon>
                 <text class="info-label">开始时间：</text>
-                <text class="info-value">{{ formatTime(item.startTime) }}</text>
+                <text class="info-value">{{ parseTime(item.createTime) }}</text>
               </view>
               
               <view class="info-row">
                 <u-icon name="clock-fill" size="14" color="#E6A23C"></u-icon>
                 <text class="info-label">结束时间：</text>
-                <text class="info-value">{{ formatTime(item.endTime) }}</text>
+                <text class="info-value">{{ parseTime(item.endTime) }}</text>
               </view>
               
               <view class="info-row">
@@ -72,11 +78,11 @@
                 <text class="info-value">{{ getDuration(item.startTime, item.endTime) }}</text>
               </view>
               
-              <view class="info-row" v-if="item.processInstanceId">
+              <!-- <view class="info-row" v-if="item.processInstanceId">
                 <u-icon name="bookmark" size="14" color="#909399"></u-icon>
                 <text class="info-label">流程编号：</text>
                 <text class="info-value">{{ item.processInstanceId }}</text>
-              </view>
+              </view> -->
               
               <view class="info-row" v-if="item.id">
                 <u-icon name="bookmark-fill" size="14" color="#909399"></u-icon>
@@ -127,7 +133,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getTaskDonePage } from '@/api/task/index.js'
-
+import { parseTime } from "@/utils/ruoyi"
 // 响应式数据
 const searchKeyword = ref('')
 const doneList = ref([])
@@ -204,12 +210,6 @@ const handleSearch = () => {
   getDoneList(true)
 }
 
-// 格式化时间
-const formatTime = (time) => {
-  if (!time) return ''
-  const date = new Date(time)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-}
 
 // 计算耗时
 const getDuration = (startTime, endTime) => {

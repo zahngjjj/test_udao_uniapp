@@ -45,7 +45,7 @@
               <view class="info-row">
                 <u-icon name="clock" size="14" color="#67C23A"></u-icon>
                 <text class="info-label">发起时间：</text>
-                <text class="info-value">{{ formatTime(item.createTime) }}</text>
+                <text class="info-value">{{ parseTime(item.createTime) }}</text>
               </view>
               
               <view class="info-row">
@@ -108,7 +108,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getTaskTodoPage } from '@/api/task/index.js'
-
+import { parseTime } from "@/utils/ruoyi"
 // 响应式数据
 const searchKeyword = ref('')
 const todoList = ref([])
@@ -185,12 +185,6 @@ const handleSearch = () => {
   getTodoList(true)
 }
 
-// 格式化时间
-const formatTime = (time) => {
-  if (!time) return ''
-  const date = new Date(time)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-}
 
 // 获取摘要文本
 const getSummaryText = (item) => {

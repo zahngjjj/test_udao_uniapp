@@ -43,7 +43,7 @@
                 ></u-tag>
               </view>
               <view class="process-time">
-                <text class="time-text">{{ formatTime(item.createTime) }}</text>
+                <text class="time-text">{{ parseTime(item.createTime) }}</text>
               </view>
             </view>
 
@@ -64,7 +64,7 @@
               
               <view class="content-row" v-if="item.endTime">
                 <u-icon name="clock" size="14" color="#909399"></u-icon>
-                <text class="content-text">结束时间：{{ formatTime(item.endTime) }}</text>
+                <text class="content-text">结束时间：{{ parseTime(item.endTime) }}</text>
               </view>
             </view>
 
@@ -134,6 +134,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { getProcessInstanceMyPage, cancelProcessInstanceByStartUser } from '@/api/processInstance/index.js'
 import { getProcessInstanceBpmnModelView } from '@/api/processInstance/index.js'
+import { parseTime } from "@/utils/ruoyi"
 // 响应式数据
 const searchKeyword = ref('')
 const activeStatus = ref(0)
@@ -266,12 +267,7 @@ const getStatusType = (status) => {
   return typeMap[status] || 'info'
 }
 
-// 格式化时间
-const formatTime = (time) => {
-  if (!time) return ''
-  const date = new Date(time)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
-}
+
 
 
 // 获取摘要文本
