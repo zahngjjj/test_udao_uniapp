@@ -24,7 +24,7 @@
             <!-- 卡片头部 -->
             <view class="card-header">
               <view class="process-info">
-                <text class="process-name">{{ item.processInstanceName || item.name }}</text>
+                <text class="process-name">{{ item.processInstance?.name }}</text>
                 <u-tag 
                   :text="getStatusText(item.status)" 
                   :type="getStatusType(item.status)"
@@ -39,8 +39,8 @@
               
               <view class="info-row" >
                 <u-icon name="bookmark" size="14" color="#909399"></u-icon>
-                <text class="info-label">流程：</text>
-                <text class="info-value">{{ item.processInstance?.name }}</text>
+                <text class="info-label">类型：</text>
+                <text class="info-value">{{  item.processInstanceName || item.name }}</text>
               </view>
               <view class="info-row">
                 <u-icon name="account-fill" size="14" color="#409EFF"></u-icon>
