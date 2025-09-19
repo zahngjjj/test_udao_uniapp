@@ -227,7 +227,7 @@ const handleReturn = async () => {
       
       // 如果有可退回的节点，这里可以继续实现选择退回节点的逻辑
       // 暂时显示成功信息，表示找到了可退回的节点
-      showMessage(`找到 ${returnNodes.length} 个可退回的节点`, 'success')
+      showMessage(`已退回上一节点`, 'success')
       
       // TODO: 这里可以继续实现选择具体退回节点的弹框逻辑
       
