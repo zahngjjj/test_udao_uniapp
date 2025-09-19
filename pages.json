@@ -98,15 +98,21 @@
       }
     },
     {
+      "path": "pages/flow/my/detail",
+      "style": {
+        "navigationBarTitleText": "任务详情"
+      }
+    },
+    {
       "path": "pages/flow/task/waitDone",
       "style": {
         "navigationBarTitleText": "待办任务"
       }
     },
     {
-      "path": "pages/flow/detail/index",
+      "path": "pages/flow/task/createTaskAgain",
       "style": {
-        "navigationBarTitleText": "任务详情"
+        "navigationBarTitleText": "发起任务"
       }
     },
     {

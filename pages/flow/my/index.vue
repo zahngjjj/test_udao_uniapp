@@ -133,7 +133,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { getProcessInstanceMyPage, cancelProcessInstanceByStartUser } from '@/api/processInstance/index.js'
-
+import { getProcessInstanceBpmnModelView } from '@/api/processInstance/index.js'
 // 响应式数据
 const searchKeyword = ref('')
 const activeStatus = ref(0)
@@ -388,9 +388,18 @@ const getSummaryText = (item) => {
 
 // 查看详情
 const handleViewDetail = (item) => {
-  uni.navigateTo({
-    url: `/pages/flow/detail/index?id=${item.id}`
+
+  getProcessInstanceBpmnModelView(item.id).then(res=>{
+    console.log(res,'rrrr')
+    const processInstanceId= res.data.tasks[0].processInstanceId;
+    const taskId= res.data.tasks[0].id;
+    uni.navigateTo({
+      url: `/pages/flow/my/detail?processInstanceId=${processInstanceId}&taskId=${taskId}&reset=true&type=todo`
+    })
   })
+  // uni.navigateTo({
+  //   url: `/pages/flow/detail/index?id=${item.id}`
+  // })
 }
 
 
@@ -455,7 +464,7 @@ const handleRestart = (item) => {
       if (res.confirm) {
         // 跳转到创建页面，并传入原流程信息
        uni.navigateTo({
-          url: `/pages/flow/create/createForm?processDefinitionId=${item.processDefinitionId}&id=${item.id}&reset=true`
+          url: `/pages/flow/task/createTaskAgain?id=${item.id}`
         })
       }
     }

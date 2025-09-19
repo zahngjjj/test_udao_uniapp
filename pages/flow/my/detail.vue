@@ -22,7 +22,7 @@
   } from "@dcloudio/uni-app";
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
-    import { createProcessInstance, getApprovalDetail} from '@/api/processInstance/index.js'
+    import { createProcessInstance, getApprovalDetail  } from '@/api/processInstance/index.js'
     import Status from '@/pages/flow/task/components/status.vue'
     import Buttongroup from '@/pages/flow/task/components/buttongroup.vue'
 
@@ -227,7 +227,7 @@ onLoad(async (options) => {
 .content {
 	padding: 12px;
 	padding-bottom: 150px; /* 为底部按钮留出空间 */
-  background: #ffffff; /* 改为完全不透明的白色背景 */
+    background: #ffffff; /* 改为完全不透明的白色背景 */
 }
 
 

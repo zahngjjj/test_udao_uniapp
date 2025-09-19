@@ -40,7 +40,7 @@ import Verify from "@/components/verifition/Verify"
 
 const appLogo = config.appInfo.logo
 
-const captchaEnabled = ref(true) //todo 以后要开启，放到参数里面去
+const captchaEnabled = ref(false) //todo 以后要开启，放到参数里面去
 
 const loginForm = ref({
   username: '',

@@ -335,10 +335,7 @@ const handleResubmit = () => {
     const options = currentPage.options
     
     const params = {
-      processInstanceId: options.processInstanceId || props.processInstanceId,
-      taskId: options.taskId || props.taskId,
-      reset: 'true',
-      type: options.type || 'edit'
+      id: options.processInstanceId
     }
     
     const queryString = Object.keys(params)
@@ -346,10 +343,8 @@ const handleResubmit = () => {
       .join('&')
     
     uni.navigateTo({
-      url: `/pages/flow/create/createForm?${queryString}`
+      url: `/pages/flow/task/createTaskAgain?${queryString}`
     })
-    
-    showMessage('正在跳转到表单页面')
   } catch (error) {
     console.error('跳转失败:', error)
     showMessage('跳转失败：' + (error.message || '未知错误'), 'error')

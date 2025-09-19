@@ -84,7 +84,6 @@ const onSearchClear = () => {
 
 // 跳转到详情页
 const goToDetail = (item) => {
-  console.log(item,'dddd')
   uni.navigateTo({
     url: `/pages/flow/create/createForm?processDefinitionId=${item.id}`
   })

@@ -32,12 +32,12 @@
   } from "@dcloudio/uni-app";
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
-	import { getProcessDefinition } from '@/api/definition/index.js'
-import { createProcessInstance, getApprovalDetail ,getProcessInstance } from '@/api/processInstance/index.js'
+
+  import { createProcessInstance, getApprovalDetail ,getProcessInstance } from '@/api/processInstance/index.js'
 
 const customFlowData = ref([])
 
-
+const processInstanceId = ref('')
   const formCreateRef = ref()
   const formDetailPreview = ref({
     rule: [],
@@ -45,44 +45,7 @@ const customFlowData = ref([])
     value:{}
   })
 
-// 获取流程定义数据并更新表单
-const loadProcessDefinition = async (id) => {
-  try {
-    const response = await getProcessDefinition(id)
-    if (response && response.data) {
-      const processData = response.data
-      
-      // 如果接口返回的数据包含表单配置
-      if (processData.formConf) {
-        formDetailPreview.value.option = JSON.parse(processData.formConf)
-      }
-      
-      // 如果接口返回的数据包含表单字段
-      if (processData.formFields) {
-        formDetailPreview.value.rule = decodeFields(processData.formFields)
-      }
-      
-      // 如果接口返回的数据包含表单值
-      if (processData.formValues) {
-        formDetailPreview.value.value = processData.formValues
-      }
-      
-      // 更新表单显示
-      if (formCreateRef.value) {
-        formCreateRef.value.showForm(formDetailPreview.value.rule)
-        if (processData.formValues) {
-          formCreateRef.value.setFormValues(processData.formValues)
-        }
-      }
-    }
-  } catch (error) {
-    console.error('获取流程定义失败:', error)
-    uni.showToast({
-      title: '获取流程定义失败',
-      icon: 'error'
-    })
-  }
-}
+
 
 
 // 获取审批详情和流程数据
@@ -163,9 +126,61 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 
 
 
-// const optionJson2  =  "{\"form\":{\"inline\":false,\"hideRequiredAsterisk\":false,\"labelPosition\":\"right\",\"size\":\"default\",\"labelWidth\":\"120px\"},\"resetBtn\":{\"show\":false,\"innerText\":\"重置\"},\"submitBtn\":{\"show\":true,\"innerText\":\"提交\"}}"
-// const  dataJson2 = ["{\"type\":\"html\",\"title\":\"\",\"native\":true,\"attrs\":{\"innerHTML\":\"\"},\"style\":{\"display\":\"block\",\"width\":\"100%\"},\"children\":[\"<div style=\\\"width:100%;text-align:center\\\">\\n\\t\\t<h2>周报</h2>\\n  </div>\"],\"_fc_id\":\"id_Ffvamf3dnm2maxc\",\"name\":\"ref_Fss0mf3dnm2mayc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"html\"}","{\"type\":\"UserSelect\",\"field\":\"user\",\"title\":\"汇报人\",\"info\":\"\",\"$required\":false,\"_fc_id\":\"id_Fkntmf4owpwib3c\",\"name\":\"ref_Fmnomf4owpwib4c\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"UserSelect\"}","{\"type\":\"DeptSelect\",\"field\":\"21985ce7-dc15-4677-8522-4f7070aded37\",\"title\":\"部门选择器\",\"info\":\"\",\"$required\":false,\"_fc_id\":\"id_Fq3tmf3ikv3fb2c\",\"name\":\"ref_F6b4mf3ikv3fb3c\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"DeptSelect\"}","{\"type\":\"fcRow\",\"children\":[{\"type\":\"col\",\"props\":{\"span\":12},\"children\":[{\"type\":\"datePicker\",\"field\":\"F4bemf3ins6mbac\",\"title\":\"本周开始日期\",\"info\":\"\",\"$required\":false,\"_fc_id\":\"id_Fx2qmf3ins6mbbc\",\"name\":\"ref_Fnsamf3ins6mbcc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"datePicker\"}],\"_fc_id\":\"id_F38nmf3inlczb6c\",\"name\":\"ref_Fp5bmf3inlczb7c\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"col\"},{\"type\":\"col\",\"props\":{\"span\":12},\"children\":[{\"type\":\"datePicker\",\"field\":\"Fizzmf3io73lbgc\",\"title\":\"本周结束日期\",\"info\":\"\",\"$required\":false,\"_fc_id\":\"id_Fua4mf3io73lbhc\",\"name\":\"ref_Fj8hmf3io73lbic\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"datePicker\"}],\"_fc_id\":\"id_Fmeqmf3inlczb8c\",\"name\":\"ref_Fnuumf3inlczb9c\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"col\"}],\"_fc_id\":\"id_F376mf3inlczb4c\",\"name\":\"ref_Fkgzmf3inlczb5c\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"fcRow\"}","{\"type\":\"input\",\"field\":\"Fmfvmf3dkhuualc\",\"title\":\"本周工作总结\",\"info\":\"\",\"$required\":false,\"props\":{\"type\":\"textarea\",\"rows\":6},\"_fc_id\":\"id_Fc7smf3dkhuuamc\",\"name\":\"ref_F2pjmf3dkhuuanc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"textarea\"}","{\"type\":\"input\",\"field\":\"Ft8fmf3dloj1aoc\",\"title\":\"本周遇到的问题\",\"info\":\"\",\"$required\":false,\"props\":{\"type\":\"textarea\",\"rows\":4},\"_fc_id\":\"id_Fqm6mf3dloj1apc\",\"name\":\"ref_Fuxlmf3dloj1aqc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"textarea\"}","{\"type\":\"input\",\"field\":\"F14xmf3dmoskarc\",\"title\":\"问题解决方案\",\"info\":\"\",\"$required\":false,\"props\":{\"type\":\"textarea\",\"rows\":4},\"_fc_id\":\"id_F2brmf3dmoskasc\",\"name\":\"ref_Fxy8mf3dmoskatc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"textarea\"}","{\"type\":\"input\",\"field\":\"F5hcmf3dmxemauc\",\"title\":\"下周工作计划\",\"info\":\"\",\"$required\":false,\"props\":{\"type\":\"textarea\"},\"_fc_id\":\"id_F9w8mf3dmxemavc\",\"name\":\"ref_F0eymf3dmxemawc\",\"display\":true,\"hidden\":false,\"_fc_drag_tag\":\"textarea\"}"]
-// const valueJson = {"PROCESS_START_USER_ID":1,"_FLOWABLE_SKIP_EXPRESSION_ENABLED":true,"21985ce7-dc15-4677-8522-4f7070aded37":103,"Fmfvmf3dkhuualc":"1. yudao 系统部署：成功将 yudao 系统的前端和后端部署到服务器上。通过仔细配置服务器参数、安装必要的运行环境和依赖组件，确保前后端程序能够正常运行且相互通信，实现了系统在服务器上的初步上线。\n2. 服务器环境调整：针对 yudao 系统运行需求，对服务器环境进行了优化调整。合理分配服务器资源，如 CPU、内存等，提升系统整体性能；同时检查并修复了部分网络配置问题，保障数据传输的稳定性和安全性，为系统稳定运行创造良好环境。","Ft8fmf3dloj1aoc":"1. 业务逻辑理解不到位：yudao 系统涉及的业务场景较为复杂，不同业务流程之间存在较多关联和嵌套，导致对部分业务逻辑理解出现偏差\n2. JDK 版本切换异常：在部署前进行 JDK 版本切换时，遇到命令执行后版本未成功切换的情况，系统仍识别旧版本 JDK，导致后续部署工作无法基于目标 JDK 版本顺利开展。\n3.  兼容性问题：部分依赖库与新切换的 JDK 版本存在兼容性问题，表现为部署过程中部分功能报错，无法正常运行，如某些 Java 类库在新 JDK 环境下无法正确加载。\n4. 其他bug修复","F14xmf3dmoskarc":"1. 深入理解业务逻辑：主动与项目主管沟通,实际业务场景进行分析。对存在疑问的环节反复确认，确保准确理解业务逻辑，为正确配置系统提供保障。\n2. 解决 JDK 版本切换问题：重新安装并检查 JDK 安装路径及环境变量配置，发现环境变量中 JDK 路径指向旧版本。修正环境变量中 JDK 路径，确保其准确指向新版本 JDK 安装目录。同时，检查系统 PATH 变量设置，保证新版本 JDK 的 bin 目录在搜索路径中优先级正确。执行相关命令验证，成功实现 JDK 版本切换。\n3.  处理兼容性问题：查阅相关依赖库文档，确定与新 JDK 版本兼容的依赖库版本。对存在兼容性问题的依赖库进行版本升级或降级处理，在本地测试环境进行多次测试，确保依赖库与新 JDK 版本能够协同工作，成功解决部署过程中的功能报错问题。","F5hcmf3dmxemauc":"开发 CDC 数据捕获模块","F4bemf3ins6mbac":"2025-09-08","Fizzmf3io73lbgc":"2025-09-12","user":3442}
+
+const loadProcessInstanceDataToALL = async (id) => {
+  try {
+    const response = await getProcessInstance(id)
+    if (response && response.data) {
+      const processInstanceData = response.data
+      
+      processInstanceId.value = processInstanceData.processDefinitionId
+
+      if(processInstanceData .processDefinitionId) {
+         await getApprovalDetailData(processInstanceData .processDefinitionId)
+      }
+      
+      // 从 processDefinition 中获取表单配置和字段
+      if (processInstanceData.processDefinition) {
+        const processDefinition = processInstanceData.processDefinition
+        
+        // 设置表单配置 (formConf)
+        if (processDefinition.formConf) {
+          formDetailPreview.value.option = JSON.parse(processDefinition.formConf)
+        }
+        
+        // 设置表单字段 (formFields)
+        if (processDefinition.formFields && processDefinition.formFields.length > 0) {
+          formDetailPreview.value.rule = decodeFields(processDefinition.formFields)
+        }
+      }
+      
+      // 如果接口返回的数据包含表单变量，设置表单值
+      if (processInstanceData.formVariables) {
+        formDetailPreview.value.value = processInstanceData.formVariables
+      }
+      
+      // 更新表单显示
+      if (formCreateRef.value) {
+        // 先显示表单结构
+        if (formDetailPreview.value.rule.length > 0) {
+          formCreateRef.value.showForm(formDetailPreview.value.rule)
+        }
+        
+        // 再设置表单值
+        if (processInstanceData.formVariables) {
+          formCreateRef.value.setFormValues(processInstanceData.formVariables)
+        }
+      }
+    }
+  } catch (error) {
+    console.error('获取流程实例失败:', error)
+    uni.showToast({
+      title: '获取流程实例失败',
+      icon: 'error'
+    })
+  }
+}
+
 
 
     const handleSubmit = async () => {
@@ -177,7 +192,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
             const pages = getCurrentPages()
             const currentPage = pages[pages.length - 1]
             const options = currentPage.options
-            const processDefinitionId = options.processDefinitionId
+            const processDefinitionId = processInstanceId.value
             
             if (!processDefinitionId) {
                 uni.showToast({
@@ -206,7 +221,9 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
                 
                 // 延迟返回上一页
                 setTimeout(() => {
-                    uni.navigateBack()
+                   uni.navigateBack({
+                        delta: 2
+                    })
                 }, 1500)
             } else {
                 uni.showToast({
@@ -251,9 +268,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 
 
 onLoad(async (options) => {
-  // 正常发起流程
-     await loadProcessDefinition(options.processDefinitionId)
-     await getApprovalDetailData(options.processDefinitionId)
+  await loadProcessInstanceDataToALL(options.id)
 })
 </script>
 
