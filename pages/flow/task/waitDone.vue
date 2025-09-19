@@ -39,13 +39,13 @@
               <view class="info-row">
                 <u-icon name="account-fill" size="14" color="#409EFF"></u-icon>
                 <text class="info-label">发起人：</text>
-                <text class="info-value">{{ item.startUserNickname || '未知' }}</text>
+                <text class="info-value">{{ item.processInstance?.startUser?.nickname|| '未知' }}</text>
               </view>
               
               <view class="info-row">
                 <u-icon name="clock" size="14" color="#67C23A"></u-icon>
                 <text class="info-label">发起时间：</text>
-                <text class="info-value">{{ formatTime(item.processInstanceCreateTime) }}</text>
+                <text class="info-value">{{ formatTime(item.createTime) }}</text>
               </view>
               
               <view class="info-row">
@@ -54,11 +54,11 @@
                 <text class="info-value">{{ item.name || '待处理' }}</text>
               </view>
               
-              <view class="info-row" v-if="item.processInstanceId">
+              <!-- <view class="info-row" v-if="item.processInstanceId">
                 <u-icon name="bookmark" size="14" color="#909399"></u-icon>
                 <text class="info-label">流程编号：</text>
                 <text class="info-value">{{ item.processInstanceId}}</text>
-              </view>
+              </view> -->
               
               <view class="info-row" v-if="item.id">
                 <u-icon name="bookmark" size="14" color="#909399"></u-icon>
