@@ -1,23 +1,49 @@
 <template>
-  <view class="button-group">
-    <!-- 审核中状态的按钮组 -->
-    <view v-if="status === 1" class="audit-buttons">
-      <button class="approve-btn" @click="handleApprove" :disabled="loading">
-        {{ loading ? '处理中...' : '通过' }}
-      </button>
-      <button class="reject-btn" @click="handleReject" :disabled="loading">
-        {{ loading ? '处理中...' : '拒绝' }}
-      </button>
-      <button class="copy-btn" @click="handleCopy" :disabled="loading">
-        抄送
-      </button>
-    </view>
-    
-    <!-- 其他状态的按钮 -->
-    <view v-else class="other-buttons">
-      <button class="resubmit-btn" @click="handleResubmit" :disabled="loading">
-        再次提交
-      </button>
+  <view class="button-container">
+    <view class="button-wrapper">
+      <!-- 审核中状态的按钮组 -->
+      <template v-if="status === 1">
+        <button class="action-button approve-button" @click="handleApprove" :disabled="loading">
+          <text class="button-icon">✓</text>
+          <text class="button-text">{{ loading ? '处理中...' : '通过' }}</text>
+        </button>
+        <button class="action-button reject-button" @click="handleReject" :disabled="loading">
+          <text class="button-icon">✕</text>
+          <text class="button-text">{{ loading ? '处理中...' : '拒绝' }}</text>
+        </button>
+        <button class="action-button transfer-button" @click="handleCopy" :disabled="loading">
+          <text class="button-icon">↗</text>
+          <text class="button-text">抄送</text>
+        </button>
+        <button class="action-button forward-button" @click="handleForward" :disabled="loading">
+          <text class="button-icon">→</text>
+          <text class="button-text">转办</text>
+        </button>
+        <button class="action-button delegate-button" @click="handleDelegate" :disabled="loading">
+          <text class="button-icon">⚡</text>
+          <text class="button-text">委派</text>
+        </button>
+        <button class="action-button add-button" @click="handleAdd" :disabled="loading">
+          <text class="button-icon">+</text>
+          <text class="button-text">加签</text>
+        </button>
+        <button class="action-button return-button" @click="handleReturn" :disabled="loading">
+          <text class="button-icon">←</text>
+          <text class="button-text">退回</text>
+        </button>
+        <button class="action-button cancel-button" @click="handleCancel" :disabled="loading">
+          <text class="button-icon">↶</text>
+          <text class="button-text">取消</text>
+        </button>
+      </template>
+      
+      <!-- 其他状态的按钮 -->
+      <template v-else>
+        <button class="action-button resubmit-button" @click="handleResubmit" :disabled="loading">
+          <text class="button-icon">↻</text>
+          <text class="button-text">再次提交</text>
+        </button>
+      </template>
     </view>
     
     <!-- 抄送组件 -->
@@ -40,19 +66,48 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  taskId: {
+    type: [Number, String],
+    required: true
+  },
+  processInstanceId: {
+    type: [Number, String],
+    required: true
+  }
 })
 
 // 响应式数据
 const loading = ref(false)
 const copyTaskRef = ref(null)
 
+// 显示消息提示
+const showMessage = (message, type = 'success') => {
+  uni.showToast({
+    title: message,
+    icon: type === 'success' ? 'success' : 'none',
+    duration: 2000
+  })
+}
+
+// 显示确认对话框
+const showConfirm = (title, content) => {
+  return new Promise((resolve) => {
+    uni.showModal({
+      title,
+      content,
+      success: (res) => {
+        resolve(res.confirm)
+      }
+    })
+  })
+}
+
 // 方法
 const handleApprove = async () => {
   const result = await uni.showModal({
-    title: '确认通过',
-    content: '请输入通过理由',
+    title: '审批意见',
     editable: true,
-    placeholderText: '请输入通过理由'
+    placeholderText: '请输入审批意见'
   })
   
   if (result.confirm) {
@@ -63,19 +118,13 @@ const handleApprove = async () => {
         reason: result.content || ''
       })
       
-      uni.showToast({
-        title: '审批通过',
-        icon: 'success'
-      })
+      showMessage('审批通过成功')
       
       setTimeout(() => {
         uni.navigateBack()
       }, 1500)
     } catch (error) {
-      uni.showToast({
-        title: '操作失败',
-        icon: 'error'
-      })
+      showMessage('操作失败：' + (error.message || '未知错误'), 'error')
     } finally {
       loading.value = false
     }
@@ -84,10 +133,9 @@ const handleApprove = async () => {
 
 const handleReject = async () => {
   const result = await uni.showModal({
-    title: '确认拒绝',
-    content: '请输入拒绝理由',
+    title: '审批意见',
     editable: true,
-    placeholderText: '请输入拒绝理由'
+    placeholderText: '请输入审批意见'
   })
   
   if (result.confirm) {
@@ -98,19 +146,13 @@ const handleReject = async () => {
         reason: result.content || ''
       })
       
-      uni.showToast({
-        title: '已拒绝',
-        icon: 'success'
-      })
+      showMessage('审批拒绝成功')
       
       setTimeout(() => {
         uni.navigateBack()
       }, 1500)
     } catch (error) {
-      uni.showToast({
-        title: '操作失败',
-        icon: 'error'
-      })
+      showMessage('操作失败：' + (error.message || '未知错误'), 'error')
     } finally {
       loading.value = false
     }
@@ -119,6 +161,46 @@ const handleReject = async () => {
 
 const handleCopy = () => {
   copyTaskRef.value?.show()
+}
+
+// 转办
+const handleForward = async () => {
+  const confirmed = await showConfirm('确认操作', '确定要转办此任务吗？')
+  if (!confirmed) return
+  
+  showMessage('转办功能开发中', 'error')
+}
+
+// 委派
+const handleDelegate = async () => {
+  const confirmed = await showConfirm('确认操作', '确定要委派此任务吗？')
+  if (!confirmed) return
+  
+  showMessage('委派功能开发中', 'error')
+}
+
+// 加签
+const handleAdd = async () => {
+  const confirmed = await showConfirm('确认操作', '确定要加签此任务吗？')
+  if (!confirmed) return
+  
+  showMessage('加签功能开发中', 'error')
+}
+
+// 退回
+const handleReturn = async () => {
+  const confirmed = await showConfirm('确认操作', '确定要退回此任务吗？')
+  if (!confirmed) return
+  
+  showMessage('退回功能开发中', 'error')
+}
+
+// 取消
+const handleCancel = async () => {
+  const confirmed = await showConfirm('确认操作', '确定要取消此任务吗？')
+  if (!confirmed) return
+  
+  showMessage('取消功能开发中', 'error')
 }
 
 const handleResubmit = () => {
@@ -141,12 +223,11 @@ const handleResubmit = () => {
     uni.navigateTo({
       url: `/pages/flow/create/createForm?${queryString}`
     })
+    
+    showMessage('正在跳转到表单页面')
   } catch (error) {
     console.error('跳转失败:', error)
-    uni.showToast({
-      title: '跳转失败',
-      icon: 'error'
-    })
+    showMessage('跳转失败：' + (error.message || '未知错误'), 'error')
   }
 }
 
@@ -164,56 +245,179 @@ const handleCopyCancel = () => {
 </script>
 
 <style scoped>
-.button-group {
+/* 底部按钮容器 */
+.button-container {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
-  padding: 20rpx;
-  border-top: 1px solid #eee;
+  background: #ffffff;
+  padding: 20rpx 32rpx 40rpx 32rpx;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
   z-index: 999;
+  border-top: 1rpx solid #f0f0f0;
 }
 
-.audit-buttons {
+.button-wrapper {
   display: flex;
-  gap: 20rpx;
+  gap: 16rpx;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.other-buttons {
+/* 按钮基础样式 */
+.action-button {
   display: flex;
-}
-
-.approve-btn, .reject-btn, .copy-btn, .resubmit-btn {
-  flex: 1;
-  height: 80rpx;
-  border: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx 24rpx;
   border-radius: 8rpx;
-  font-size: 30rpx;
-  color: white;
+  border: 2rpx solid;
+  font-size: 26rpx;
+  font-weight: 500;
+  min-width: 100rpx;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.approve-btn {
-  background: #28a745;
+.action-button:disabled {
+  background: #f5f5f5 !important;
+  border-color: #d9d9d9 !important;
+  color: #bfbfbf !important;
+  cursor: not-allowed;
 }
 
-.reject-btn {
-  background: #dc3545;
+/* 通过按钮 */
+.approve-button {
+  background: #e8f5e8;
+  border-color: #52c41a;
+  color: #52c41a;
 }
 
-.copy-btn {
-  background: #17a2b8;
+.approve-button:hover {
+  background: #d9f7be;
+  transform: translateY(-2rpx);
 }
 
-.resubmit-btn {
-  background: #007aff;
+/* 拒绝按钮 */
+.reject-button {
+  background: #fff2f0;
+  border-color: #ff4d4f;
+  color: #ff4d4f;
 }
 
-.approve-btn:disabled,
-.reject-btn:disabled,
-.copy-btn:disabled,
-.resubmit-btn:disabled {
-  background: #ccc;
-  color: #999;
+.reject-button:hover {
+  background: #ffece8;
+  transform: translateY(-2rpx);
+}
+
+/* 抄送按钮 */
+.transfer-button {
+  background: #e6f7ff;
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.transfer-button:hover {
+  background: #bae7ff;
+  transform: translateY(-2rpx);
+}
+
+/* 转办按钮 */
+.forward-button {
+  background: #f6ffed;
+  border-color: #73d13d;
+  color: #73d13d;
+}
+
+.forward-button:hover {
+  background: #d9f7be;
+  transform: translateY(-2rpx);
+}
+
+/* 委派按钮 */
+.delegate-button {
+  background: #fff7e6;
+  border-color: #fa8c16;
+  color: #fa8c16;
+}
+
+.delegate-button:hover {
+  background: #ffe7ba;
+  transform: translateY(-2rpx);
+}
+
+/* 加签按钮 */
+.add-button {
+  background: #f9f0ff;
+  border-color: #722ed1;
+  color: #722ed1;
+}
+
+.add-button:hover {
+  background: #efdbff;
+  transform: translateY(-2rpx);
+}
+
+/* 退回按钮 */
+.return-button {
+  background: #fff1f0;
+  border-color: #ff7875;
+  color: #ff7875;
+}
+
+.return-button:hover {
+  background: #ffd8d2;
+  transform: translateY(-2rpx);
+}
+
+/* 取消按钮 */
+.cancel-button {
+  background: #f5f5f5;
+  border-color: #8c8c8c;
+  color: #8c8c8c;
+}
+
+.cancel-button:hover {
+  background: #e8e8e8;
+  transform: translateY(-2rpx);
+}
+
+/* 再次提交按钮 */
+.resubmit-button {
+  background: #e8f5e8;
+  border-color: #52c41a;
+  color: #52c41a;
+  min-width: 200rpx;
+}
+
+.resubmit-button:hover {
+  background: #d9f7be;
+  transform: translateY(-2rpx);
+}
+
+/* 按钮图标样式 */
+.button-icon {
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+/* 按钮文字样式 */
+.button-text {
+  font-size: 26rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .button-wrapper {
+    gap: 12rpx;
+  }
+  
+  .action-button {
+    padding: 12rpx 20rpx;
+    font-size: 24rpx;
+    min-width: 80rpx;
+  }
 }
 </style>
