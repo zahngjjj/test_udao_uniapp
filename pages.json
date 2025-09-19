@@ -120,6 +120,12 @@
       "style": {
         "navigationBarTitleText": "任务详情"
       }
+    },
+    {
+      "path": "pages/flow/task/done",
+      "style": {
+        "navigationBarTitleText": "已办任务"
+      }
     }
   ],
   "tabBar": {
