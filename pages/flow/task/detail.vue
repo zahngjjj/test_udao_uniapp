@@ -23,8 +23,8 @@
 	import FormCreateUni from '@/components/form-create-uni/form-create-uni.vue'
 	import ApprovalFlow from '@/components/approval-flow/approval-flow.vue'
     import { createProcessInstance, getApprovalDetail  } from '@/api/processInstance/index.js'
-    import Status from './components/status.vue'
-    import Buttongroup from './components/buttongroup.vue'
+    import Status from '@/pages/flow/task/components/status.vue'
+    import Buttongroup from '@/pages/flow/task/components/buttongroup.vue'
 
 const customFlowData = ref([])
 

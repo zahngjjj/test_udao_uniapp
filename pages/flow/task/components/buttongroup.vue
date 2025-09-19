@@ -67,11 +67,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { approveTask, rejectTask ,getTaskListByReturn} from '@/api/task/index'
-import CopyTask from './copyTask.vue'
-import ForwardTask from './forwardTask.vue'
-import DelegateTask from './delegateTask.vue'
-import addTask from './addTask.vue'
+import { approveTask, rejectTask ,getTaskListByReturn } from '@/api/task/index'
+import { cancelProcessInstanceByStartUser } from '@/api/processInstance/index'
+import CopyTask from '@/pages/flow/task/components/copyTask.vue'
+import ForwardTask from '@/pages/flow/task/components/forwardTask.vue'
+import DelegateTask from '@/pages/flow/task/components/delegateTask.vue'
+import addTask from '@/pages/flow/task/components/addTask.vue'
 // Props
 const props = defineProps({
   status: {
@@ -255,13 +256,77 @@ const handleReturn = async () => {
   }
 }
 
+
 // 取消
 const handleCancel = async () => {
-  const confirmed = await showConfirm('确认操作', '确定要取消此任务吗？')
-  if (!confirmed) return
-  
-  showMessage('取消功能开发中', 'error')
+  // 显示自定义弹框，包含红色警告文字和输入框
+  uni.showModal({
+    title: '取消流程,取消后该审批流程将自动结束',
+    content: '',
+    editable: true,
+    placeholderText: '请输入取消理由',
+    success: async (res) => {
+      if (res.confirm) {
+        const reason = res.content || ''
+        
+        if (!reason.trim()) {
+          showMessage('请输入取消理由', 'error')
+          return
+        }
+        
+        try {
+          loading.value = true
+          
+          // 获取processInstanceId，优先从props获取，其次从路由获取
+          let processInstanceId = props.processInstanceId
+          if (!processInstanceId) {
+            const pages = getCurrentPages()
+            const currentPage = pages[pages.length - 1]
+            const options = currentPage.options
+            processInstanceId = options.processInstanceId
+          }
+          
+          if (!processInstanceId) {
+            showMessage('流程实例ID不能为空', 'error')
+            return
+          }
+          
+          // 调用取消接口
+          await cancelProcessInstanceByStartUser({
+            id: processInstanceId,
+            reason: reason.trim()
+          })
+          
+          showMessage('取消成功', 'success')
+          
+          // 延迟返回上一页
+          setTimeout(() => {
+            uni.navigateBack()
+          }, 1500)
+          
+        } catch (error) {
+          console.error('取消失败:', error)
+          
+          // 获取API返回的具体错误信息
+          let errorMessage = '取消失败'
+          
+          if (error && error.msg) {
+            errorMessage = error.msg
+          } else if (error && error.message) {
+            errorMessage = error.message
+          } else if (error && error.data && error.data.msg) {
+            errorMessage = error.data.msg
+          }
+          
+          showMessage(errorMessage, 'error')
+        } finally {
+          loading.value = false
+        }
+      }
+    }
+  })
 }
+
 
 const handleResubmit = () => {
   try {
