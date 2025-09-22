@@ -5,7 +5,7 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-            <!-- <p v-if="item.type==='DeptSelect'">  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
+            <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
 				<!-- 人员选择器逻辑 -->
@@ -29,6 +29,15 @@
 					</rich-text>
 				</view>	
             </u-form-item>
+			<u-form-item 
+				:label="item?.title" 
+				:prop="item?.field"
+				v-if="item?.type === 'datePicker' || item?.type === 'DatePicker'">
+				<u-cell :disabled="item?.props?.disabled" @click="showPicker(item.field, item.type)"
+					:title="form[item?.field] || '请点此选择'" class="clickable-cell" />
+				<u-datetime-picker :show="picker[item?.field]" mode="date" @confirm="confirmDate"
+					@cancel="picker[item?.field] = false"></u-datetime-picker>
+			</u-form-item>
             <u-form-item :label="item?.title" :prop="item?.field"
 					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
                     <!-- 计数器 -->
@@ -146,7 +155,7 @@
 								<u-form-item 
 									:label="childItem?.title" 
 									:prop="childItem?.field"
-									v-if="childItem?.type === 'datePicker'">
+									v-if="childItem?.type === 'datePicker' || childItem?.type === 'DatePicker'">
 									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
 										:title="form[childItem?.field] || '请点此选择'" class="clickable-cell" />
 									<u-datetime-picker :show="picker[childItem?.field]" mode="date" @confirm="confirmDate"
@@ -371,7 +380,7 @@
 
 		fieldPicker = field
 
-		if (type === 'timePicker' || type === 'datePicker') {
+		if (type === 'timePicker' || type === 'datePicker' || type === 'DatePicker') {
 
 			picker.value[field] = true
 		}
