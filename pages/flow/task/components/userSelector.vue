@@ -61,7 +61,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getUserList } from '@/api/system/user'
+import { getUserList } from '@/api/common/index'
 
 // Props
 const props = defineProps({
@@ -73,7 +73,7 @@ const props = defineProps({
   // 已选用户（用于回显）
   modelValue: {
     type: [Array, Object],
-    default: () => props.multiple ? [] : null
+    default: null
   },
   // 是否显示
   show: {

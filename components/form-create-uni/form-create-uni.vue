@@ -5,8 +5,18 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-            <!-- <p v-if="item.type==='fcRow'">  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
+            <!-- <p v-if="item.type==='DeptSelect'">  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
+             <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
+				<!-- 人员选择器逻辑 -->
+				<span>{{ form[item?.field]?.name }}</span>
+				<single-user-select v-model="form[item?.field]" />
+            </u-form-item>
+			<u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='DeptSelect'">
+				<!-- 部门选择器逻辑 -->
+				<DepartmentSelect v-model="form[item?.field]" />
+            </u-form-item>
+
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type === 'html'">
 	                <view
 					class="html-content"
@@ -19,7 +29,6 @@
 					</rich-text>
 				</view>	
             </u-form-item>
-
             <u-form-item :label="item?.title" :prop="item?.field"
 					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
                     <!-- 计数器 -->
@@ -190,7 +199,8 @@
 
 <script  setup name="form-create">
 	import { ref } from 'vue'
-
+	import SingleUserSelect from './SingleUserSelect.vue'
+	import DepartmentSelect from '@/components/form-create-uni/DepartmentSelect.vue'
 	defineProps({
 		option: {
 			type: Object,
