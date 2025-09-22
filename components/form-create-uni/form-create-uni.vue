@@ -129,9 +129,10 @@
 					<!-- 文字 -->
 					<span v-else-if="item?.type === 'span'">{{item?.children[0]}}</span>
 					<!-- 文本输入,支持属性:提示信息,是否禁用 -->
-					<u--input v-model="form[item?.field]" :placeholder="item?.props?.placeholder"
+					<u--input v-else-if="item?.type === 'input'"  v-model="form[item?.field]" :placeholder="item?.props?.placeholder"
 						:disabled="item?.props?.disabled" :focus="item?.props?.autofocus"
-						:clearable="item?.props?.clearable" :showWordLimit="item?.props?.showWordLimit" v-else />
+						:clearable="item?.props?.clearable" :showWordLimit="item?.props?.showWordLimit" />
+					<span v-else></span>
 			</u-form-item>
 
 	    <!-- fcRow布局渲染 -->
@@ -158,22 +159,26 @@
 								<u-form-item 
 									:label="childItem?.title" 
 									:prop="childItem?.field"
-									v-if="childItem?.type === 'datePicker' || childItem?.type === 'DatePicker'">
+									v-if="childItem?.type === 'datePicker' || childItem?.type === 'DatePicker' || childItem?.type === 'timePicker'">
+								<template v-if="childItem?.type === 'datePicker' || childItem?.type === 'DatePicker'">
 									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
 										:title="form[childItem?.field] || '选择日期'" class="clickable-cell" />
 									<u-datetime-picker :show="picker[childItem?.field]" mode="date" @confirm="confirmDate"
 										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
+								</template>
+
+								 <template v-if="childItem?.type === 'timePicker'">
+
+									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
+										:title="form[childItem?.field] || '选择时间'"  class="clickable-cell" />
+
+									<u-datetime-picker :show="picker[childItem?.field]" mode="time" @confirm="confirmTime"
+										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
+
+								</template>
 								</u-form-item>
 
-							 <template v-if="childItem?.type === 'timePicker'">
 
-								<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
-									:title="form[childItem?.field] || '选择时间'"  class="clickable-cell" />
-
-								<u-datetime-picker :show="picker[childItem?.field]" mode="time" @confirm="confirmTime"
-									@cancel="picker[childItem?.field] = false"></u-datetime-picker>
-
-							 </template>
 								<!-- 可以根据需要添加其他类型的表单项 -->
 								<u-form-item 
 									:label="childItem?.title" 
@@ -525,5 +530,21 @@
 	border-color: #e4e7ed !important;
 	box-shadow: none !important;
 	transform: none;
+}
+.fc-row {
+	width: 100%;
+}
+
+.fc-col {
+	width: 100%;
+}
+
+/* 确保 u-checkbox-group 的内容不会被隐藏 */
+.u-checkbox-group {
+	width: 94% !important;
+}
+
+.u-checkbox {
+	margin-right: 6px!important;
 }
 </style>
