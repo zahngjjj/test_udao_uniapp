@@ -30,6 +30,7 @@
           @click="selectUser(user)"
         >
           <text class="user-name">{{ user.nickname }}</text>
+          <text class="user-dept">{{ user.deptName }}</text>
         </view>
       </scroll-view>
     </view>

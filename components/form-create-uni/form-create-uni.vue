@@ -8,7 +8,6 @@
             <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
-				<!-- 人员选择器逻辑 -->
 				<span>{{ form[item?.field]?.name }}</span>
 				<single-user-select v-model="form[item?.field]" />
             </u-form-item>
@@ -34,7 +33,7 @@
 				:prop="item?.field"
 				v-if="item?.type === 'datePicker' || item?.type === 'DatePicker'">
 				<u-cell :disabled="item?.props?.disabled" @click="showPicker(item.field, item.type)"
-					:title="form[item?.field] || '请点此选择'" class="clickable-cell" />
+					:title="form[item?.field] || '选择日期'" class="clickable-cell" />
 				<u-datetime-picker :show="picker[item?.field]" mode="date" @confirm="confirmDate"
 					@cancel="picker[item?.field] = false"></u-datetime-picker>
 			</u-form-item>
@@ -152,15 +151,29 @@
 							<!-- 遍历col的children，渲染具体的表单项 -->
 							<template v-for="(childItem, childIndex) in colItem?.children" :key="childIndex">
 								<!-- 递归渲染子项，这里简化为直接渲染表单项 -->
+								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type ==='UserSelect'">
+									<span>{{ form[childItem?.field]?.name }}</span>
+									<single-user-select v-model="form[childItem?.field]" />
+								</u-form-item>
 								<u-form-item 
 									:label="childItem?.title" 
 									:prop="childItem?.field"
 									v-if="childItem?.type === 'datePicker' || childItem?.type === 'DatePicker'">
 									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
-										:title="form[childItem?.field] || '请点此选择'" class="clickable-cell" />
+										:title="form[childItem?.field] || '选择日期'" class="clickable-cell" />
 									<u-datetime-picker :show="picker[childItem?.field]" mode="date" @confirm="confirmDate"
 										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
 								</u-form-item>
+
+							 <template v-if="childItem?.type === 'timePicker'">
+
+								<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
+									:title="form[childItem?.field] || '选择时间'"  class="clickable-cell" />
+
+								<u-datetime-picker :show="picker[childItem?.field]" mode="time" @confirm="confirmTime"
+									@cancel="picker[childItem?.field] = false"></u-datetime-picker>
+
+							 </template>
 								<!-- 可以根据需要添加其他类型的表单项 -->
 								<u-form-item 
 									:label="childItem?.title" 
