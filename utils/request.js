@@ -1,5 +1,5 @@
 import config from '@/config'
-import {getAccessToken} from "@/utils/auth";
+import {getAccessToken ,getRefreshToken} from "@/utils/auth";
 import {tansParams} from "@/utils/common";
 import {showConfirm, toast} from "./common";
 import {useUserStore} from '@/store/modules/user.js'
@@ -13,8 +13,11 @@ const request = (config) => {
     // 是否要设置 token
     const isToken = (config.headers || {}).isToken === false
     config.header = config.header || {}
-    if (getAccessToken() && !isToken) {
-        config.header['Authorization'] = 'Bearer ' + getAccessToken()
+    // if (getAccessToken() && !isToken) {
+    //     config.header['Authorization'] = 'Bearer ' + getAccessToken()
+    // }
+    if (getRefreshToken() && !isToken) {
+        config.header['Authorization'] = 'Bearer ' + getRefreshToken()
     }
     //设置租户
     // todo 我暂时不用租户，先用默认的1
