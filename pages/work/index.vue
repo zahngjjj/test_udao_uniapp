@@ -12,10 +12,10 @@
     </uni-swiper-dot>
 
     <!-- 宫格组件 -->
-    <uni-section title="系统管理" type="line"></uni-section>
+    <uni-section title="审批中心" type="line"></uni-section>
     <view class="grid-body">
       <uni-grid :column="4" :showBorder="false">
-        <uni-grid-item>
+        <!-- <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(0)">
             <uni-icons type="person-filled" size="30"></uni-icons>
             <text class="text">用户管理</text>
@@ -74,7 +74,7 @@
             <uni-icons type="compose" size="30"></uni-icons>
             <text class="text">表单测试</text>
           </view>
-        </uni-grid-item>
+        </uni-grid-item> -->
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(10)">
             <uni-icons type="paperplane-filled" size="30"></uni-icons>
@@ -89,19 +89,19 @@
         </uni-grid-item>
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(12)">
-            <uni-icons type="person-filled" size="30"></uni-icons>
+            <uni-icons type="calendar" size="30"></uni-icons>
             <text class="text">待办任务</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(13)">
-            <uni-icons type="person-filled" size="30"></uni-icons>
+            <uni-icons type="checkmarkempty" size="30"></uni-icons>
             <text class="text">已办任务</text>
           </view>
         </uni-grid-item>
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(14)">
-            <uni-icons type="person-filled" size="30"></uni-icons>
+            <uni-icons type="email-filled"  size="30"></uni-icons>
             <text class="text">抄送我的</text>
           </view>
         </uni-grid-item>
@@ -138,12 +138,7 @@ const changeSwiper = (e) => {
 }
 
 const handleGridClick= (index) =>{
-  if (index === 9) {
-    uni.navigateTo({
-      url: '/pages/formtest'
-    })
-    return
-  }
+
   
   if (index === 10) {
     uni.navigateTo({

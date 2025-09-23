@@ -74,12 +74,6 @@
       }
     },
     {
-      "path": "pages/formtest",
-      "style": {
-        "navigationBarTitleText": "表单测试"
-      }
-    },
-    {
       "path": "pages/flow/create/list",
       "style": {
         "navigationBarTitleText": "发起流程"
