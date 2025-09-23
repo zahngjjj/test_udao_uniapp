@@ -153,17 +153,15 @@
 				<view 
 					v-if="item?.type === 'fcRow'"
 					class="fc-row"
-					:style="item?.style"
-					:hidden="item?.hidden"
-					v-show="item?.display !== false">
+					:style="item?.style">
 					<!-- 遍历fcRow的children，渲染col内容 -->
-					<template v-for="(colItem, colIndex) in item?.children" :key="colIndex">
+					<template v-for="(colItem) in item?.children" :key="colItem?._fc_id">
 						<view 
 							v-if="colItem?.type === 'col'" 
 							class="fc-col"
 							:style="colItem?.style">
 							<!-- 遍历col的children，渲染具体的表单项 -->
-							<template v-for="(childItem, childIndex) in colItem?.children" :key="childIndex">
+							<template v-for="(childItem) in colItem?.children" :key="childItem?._fc_id">
 								<!-- 递归渲染子项，这里简化为直接渲染表单项 -->
 								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type ==='UserSelect'">
 									<span>{{ form[childItem?.field]?.name }}</span>
