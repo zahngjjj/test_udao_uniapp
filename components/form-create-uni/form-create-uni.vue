@@ -201,6 +201,17 @@
 										:disabled="childItem?.props?.disabled">
 									</u--input>
 								</u-form-item>
+									<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type =='UploadImg'">
+									<UploadImage 
+										v-model="form[childItem?.field]" 
+										:multiple="childItem?.props?.multiple || false"
+										:maxCount="childItem?.props?.maxCount || 9"
+										:disabled="childItem?.props?.disabled || false"
+										:maxSize="childItem?.props?.maxSize || 5 * 1024 * 1024"
+										@upload-success="handleUploadSuccess"
+										@upload-error="handleUploadError"
+									/>
+								</u-form-item>
 							</template>
 						</view>
 					</template>
