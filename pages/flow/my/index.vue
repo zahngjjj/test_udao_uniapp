@@ -47,13 +47,6 @@
               </view>
             </view>
 
-            <!-- 摘要信息 -->
-            <view class="card-summary" v-if="getSummaryText(item)">
-              <view class="summary-row">
-                <u-icon name="file-text" size="16" color="#409EFF"></u-icon>
-                <text class="summary-text">{{ getSummaryText(item) }}</text>
-              </view>
-            </view>
 
             <!-- 卡片内容 -->
             <view class="card-content">
@@ -270,117 +263,6 @@ const getStatusType = (status) => {
 
 
 
-// 获取摘要文本
-
-const getSummaryText = (item) => {
-  
-  // 如果有summary字段且是数组格式（参考Web端结构）
-  if (item.summary && Array.isArray(item.summary) && item.summary.length > 0) {
-    // 过滤出有效的摘要项
-    const validSummaryItems = item.summary.filter(summaryItem => 
-      summaryItem && summaryItem.key && summaryItem.value && 
-      typeof summaryItem.value === 'string' && summaryItem.value.trim().length > 0
-    )
-    
-    if (validSummaryItems.length > 0) {
-      // 按value长度排序，取最长的作为主要摘要
-      const sortedItems = validSummaryItems.sort((a, b) => b.value.length - a.value.length)
-      const mainSummary = sortedItems[0]
-      
-      // 格式化显示：key: value
-      const text = `${mainSummary.key}: ${mainSummary.value}`
-      return text.length > 100 ? text.substring(0, 100) + '...' : text
-    }
-  }
-  
-  // 如果summary是字符串格式
-  if (item.summary && typeof item.summary === 'string' && item.summary.trim()) {
-    return item.summary.length > 100 
-      ? item.summary.substring(0, 100) + '...'
-      : item.summary
-  }
-  
-  // 检查是否有表单数据字段
-  const possibleFormFields = ['formData', 'variables', 'formVariables', 'businessData', 'processVariables']
-  
-  for (const fieldName of possibleFormFields) {
-    if (item[fieldName]) {
-      let formData = item[fieldName]
-      
-      // 如果是字符串，尝试解析为JSON
-      if (typeof formData === 'string') {
-        try {
-          formData = JSON.parse(formData)
-        } catch (e) {
-          // 如果解析失败，直接使用字符串内容
-          if (formData.length > 10) {
-            return formData.length > 100 
-              ? formData.substring(0, 100) + '...'
-              : formData
-          }
-          continue
-        }
-      }
-      
-      // 如果是数组格式（类似summary结构）
-      if (Array.isArray(formData)) {
-        const textFields = formData
-          .filter(field => field && field.value && typeof field.value === 'string' && field.value.trim().length > 10)
-          .sort((a, b) => b.value.length - a.value.length)
-        
-        if (textFields.length > 0) {
-          const longestField = textFields[0]
-          const text = longestField.key 
-            ? `${longestField.key}: ${longestField.value}`
-            : longestField.value
-          
-          return text.length > 100 
-            ? text.substring(0, 100) + '...'
-            : text
-        }
-      }
-      
-      // 如果是对象格式，提取值较长的字段
-      if (typeof formData === 'object' && formData !== null) {
-        const textValues = Object.entries(formData)
-          .filter(([key, value]) => {
-            return value && typeof value === 'string' && value.trim().length > 10 && 
-                   !key.toLowerCase().includes('id') && !key.toLowerCase().includes('time')
-          })
-          .sort(([,a], [,b]) => b.length - a.length)
-        
-        if (textValues.length > 0) {
-          const [key, value] = textValues[0]
-          const text = `${key}: ${value}`
-          
-          return text.length > 100 
-            ? text.substring(0, 100) + '...'
-            : text
-        }
-      }
-    }
-  }
-  
-  // 如果有描述字段
-  if (item.description && typeof item.description === 'string' && item.description.trim()) {
-    return item.description.length > 100 
-      ? item.description.substring(0, 100) + '...'
-      : item.description
-  }
-  
-  // 检查其他可能包含文本内容的字段
-  const possibleTextFields = ['content', 'remark', 'reason', 'comment', 'note']
-  for (const fieldName of possibleTextFields) {
-    if (item[fieldName] && typeof item[fieldName] === 'string' && item[fieldName].trim().length > 10) {
-      const text = item[fieldName]
-      return text.length > 100 
-        ? text.substring(0, 100) + '...'
-        : text
-    }
-  }
-  
-  return ''
-}
 
 // 查看详情
 const handleViewDetail = (item) => {

@@ -5,12 +5,26 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-            <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p>
+            <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
 				<span>{{ form[item?.field]?.name }}</span>
 				<single-user-select v-model="form[item?.field]" />
             </u-form-item>
+
+			<u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='tableForm'">
+			<MobileTable 
+				v-model="form[item?.field]" 
+				:columns="item?.props?.columns || []"
+				:title="item?.props?.title || item?.title"
+				:readonly="item?.props?.readonly || false"
+				:disabled="item?.props?.disabled || false"
+				:show-header="item?.props?.showHeader !== false"
+				:max-rows="item?.props?.maxRows || 50"
+				@change="handleTableChange(item?.field, $event)"
+			/>
+			</u-form-item>
+
 			<u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='DeptSelect'">
 				<!-- 部门选择器逻辑 -->
 				<DepartmentSelect v-model="form[item?.field]" />
@@ -251,6 +265,7 @@
 	import SingleUserSelect from './SingleUserSelect.vue'
 	import DepartmentSelect from '@/components/form-create-uni/DepartmentSelect.vue'
 	import UploadImage from './UploadImage.vue'
+	import MobileTable from './MobileTable.vue'
 	defineProps({
 		option: {
 			type: Object,
