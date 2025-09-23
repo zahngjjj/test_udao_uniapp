@@ -122,6 +122,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { onHide, onShow } from '@dcloudio/uni-app'
 import { getTaskTodoPage } from '@/api/task/index.js'
 
 const current = ref(0)
@@ -202,6 +203,7 @@ const handleGridClick= (index) =>{
     icon: 'none'
   })
 }
+
 // 启动定时器
 const startTimer = () => {
   // 立即执行一次
@@ -212,6 +214,7 @@ const startTimer = () => {
     fetchTodoCount()
   }, 30000)
 }
+
 // 清除定时器
 const clearTimer = () => {
   if (timer) {
@@ -219,6 +222,7 @@ const clearTimer = () => {
     timer = null
   }
 }
+
 // 页面生命周期
 onMounted(() => {
   startTimer()
@@ -227,21 +231,20 @@ onMounted(() => {
 onUnmounted(() => {
   clearTimer()
 })
-// 页面显示时重新获取数据
-uni.$on('onShow', () => {
-  fetchTodoCount()
-})
 
-// 页面隐藏时清除定时器，避免后台运行
-uni.$on('onHide', () => {
-  clearTimer()
-})
-
-// 页面重新显示时启动定时器
-uni.$on('onShow', () => {
+// 页面显示时的处理（从其他页面返回时会触发）
+onShow(() => {
+  console.log('页面显示，刷新待办任务数量')
+  fetchTodoCount() // 立即刷新数据
   if (!timer) {
-    startTimer()
+    startTimer() // 如果定时器不存在，重新启动
   }
+})
+
+// 页面隐藏时的处理
+onHide(() => {
+  console.log('页面隐藏，清除定时器')
+  clearTimer() // 清除定时器，避免后台运行
 })
 </script>
 
