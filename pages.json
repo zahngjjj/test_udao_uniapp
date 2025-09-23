@@ -1,7 +1,7 @@
 {
   "pages": [
     {
-      "path": "pages/index",
+      "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "首页"
       }
@@ -12,12 +12,6 @@
         "navigationBarTitleText": "登录",
         "enablePullDownRefresh": false
       }
-    },
-    {
-      "path": "pages/work/index",
-        "style": {
-            "navigationBarTitleText": "工作台"
-        }
     },
     {
       "path": "pages/mine/index",
@@ -135,16 +129,10 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index",
+        "pagePath": "pages/home/index",
         "iconPath": "static/images/tabbar/home.png",
         "selectedIconPath": "static/images/tabbar/home_.png",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/work/index",
-        "iconPath": "static/images/tabbar/work.png",
-        "selectedIconPath": "static/images/tabbar/work_.png",
-        "text": "工作台"
       },
       {
         "pagePath": "pages/mine/index",

@@ -166,7 +166,7 @@ const loginSuccess = () => {
   userStore.GetInfo().then(res => {
     //跳到首页
     uni.reLaunch({
-      url: '/pages/index'
+      url: '/pages/home/index'
     })
   })
 }
