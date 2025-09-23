@@ -5,6 +5,8 @@
         <status :status="processStatus"></status>
         
         <buttongroup 
+         :task-id="currentTaskId"
+         :processInstanceId="processInstanceId"
           :status="processStatus"
         ></buttongroup>
 
@@ -27,7 +29,8 @@
     import Buttongroup from '@/pages/flow/task/components/buttongroup.vue'
 
 const customFlowData = ref([])
-
+const currentTaskId = ref('')
+const  processInstanceId = ref('')
 
 // 添加流程状态数据
 const processStatus = ref(null)
@@ -220,6 +223,8 @@ const showForm = (processDefinition,processInstance) => {
 
 onLoad(async (options) => {
     await getApprovalDetailData(options.processInstanceId,options.taskId)
+    currentTaskId.value = options.taskId || ''
+    processInstanceId.value = options.processInstanceId || ''
 })
 </script>
 

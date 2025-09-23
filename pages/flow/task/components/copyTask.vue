@@ -114,7 +114,12 @@ import { ref, computed, onMounted } from 'vue'
 import { getUserList } from '@/api/common/index'
 import { copyTask } from '@/api/task/index'
 
-
+const props = defineProps({
+  taskId: {
+    type: String,
+    required: true
+  }
+})
 // Emits
 const emit = defineEmits(['success', 'cancel'])
 
@@ -128,7 +133,7 @@ const copyReason = ref('')
 const selectedUsers = ref([])
 const userList = ref([])
 const searchKeyword = ref('')
-const taskId = ref('') // 新增：从路由获取的taskId
+
 
 // 计算属性
 const filteredUsers = computed(() => {
@@ -138,21 +143,7 @@ const filteredUsers = computed(() => {
   )
 })
 
-// 获取路由参数中的taskId
-const getTaskIdFromRoute = () => {
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
-  const options = currentPage.options || {}
-  taskId.value = options.taskId || options.id || ''
-  
-  if (!taskId.value) {
-    console.error('未能从路由获取taskId')
-    // uni.showToast({
-    //   title: '参数错误',
-    //   icon: 'error'
-    // })
-  }
-}
+
 
 // 方法
 const loadUsers = async () => {
@@ -225,7 +216,7 @@ const handleConfirm = async () => {
     return
   }
   
-  if (!taskId.value) {
+  if (!props.taskId) {
     uni.showToast({
       title: '任务ID不能为空',
       icon: 'error'
@@ -236,7 +227,7 @@ const handleConfirm = async () => {
   try {
     loading.value = true
     await copyTask({
-      id: taskId.value, // 使用从路由获取的taskId
+      id: props.taskId, // 使用从路由获取的taskId
       reason: copyReason.value,
       copyUserIds: selectedUsers.value.map(user => user.id)
     })
@@ -281,7 +272,6 @@ const resetData = () => {
 // 暴露给父组件的方法
 const show = () => {
   resetData()
-  getTaskIdFromRoute() // 每次显示时重新获取taskId
   copyPopup.value?.open()
 }
 
@@ -292,7 +282,6 @@ defineExpose({
 // 生命周期
 onMounted(() => {
   loadUsers()
-  getTaskIdFromRoute() // 组件挂载时获取taskId
 })
 </script>
 

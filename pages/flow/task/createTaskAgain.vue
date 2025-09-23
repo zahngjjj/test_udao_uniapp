@@ -188,10 +188,6 @@ const loadProcessInstanceDataToALL = async (id,activityId) => {
             // 获取表单数据
             const formData = formCreateRef.value.getFormData()
             
-            // 获取路由参数中的流程定义ID
-            const pages = getCurrentPages()
-            const currentPage = pages[pages.length - 1]
-            const options = currentPage.options
             const processDefinitionId = processInstanceId.value
             
             if (!processDefinitionId) {

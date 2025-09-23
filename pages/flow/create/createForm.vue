@@ -39,6 +39,7 @@ import { createProcessInstance, getApprovalDetail ,getProcessInstance } from '@/
 
 const customFlowData = ref([])
 const loading = ref(false)
+const processDefinitionId = ref('')
 
   const formCreateRef = ref()
   const formDetailPreview = ref({
@@ -174,14 +175,8 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
             
             const formData = formCreateRef.value.getFormData()
             loading.value = true
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            // 获取路由参数中的流程定义ID
-            const pages = getCurrentPages()
-            const currentPage = pages[pages.length - 1]
-            const options = currentPage.options
-            const processDefinitionId = options.processDefinitionId
-            
-            if (!processDefinitionId) {
+            await new Promise(resolve => setTimeout(resolve, 2000))            
+            if (!processDefinitionId.value) {
                 uni.showToast({
                     title: '流程定义ID不能为空',
                     icon: 'error'
@@ -191,7 +186,7 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
             
             // 构造请求参数
             const requestData = {
-                processDefinitionId: processDefinitionId,
+                processDefinitionId: processDefinitionId.value,
                 variables: formData,
                 startUserSelectAssignees: {}
             }
@@ -256,10 +251,14 @@ const getApprovalDetailData = async (processDefinitionId, activityId = 'StartUse
 
 
 onLoad(async (options) => {
+  // 存储processDefinitionId到全局变量
+  processDefinitionId.value = options.processDefinitionId
+  
   // 正常发起流程
-     await loadProcessDefinition(options.processDefinitionId)
-     await getApprovalDetailData(options.processDefinitionId)
+  await loadProcessDefinition(options.processDefinitionId)
+  await getApprovalDetailData(options.processDefinitionId)
 })
+
 </script>
 
 <style scoped>

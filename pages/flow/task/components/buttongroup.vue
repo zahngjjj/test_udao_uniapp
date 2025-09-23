@@ -49,19 +49,21 @@
     <!-- 抄送组件 -->
     <copy-task 
       ref="copyTaskRef"
+      :task-id="props.taskId"
       @success="handleCopySuccess"
       @cancel="handleCopyCancel"
     />
     <!-- 转办组件 -->
      <forward-task 
       ref="forwardTaskRef"
+      :task-id="props.taskId"
       @success="handleForwardSuccess"
       @cancel="handleForwardCancel"
     />
     <!-- 委派组件 -->
-    <DelegateTask ref="delegateTaskRef" @success="handleDelegateSuccess" />
+    <DelegateTask ref="delegateTaskRef" :task-id="props.taskId" @success="handleDelegateSuccess" />
       <!-- 加签组件 -->
-    <addTask ref="addTaskRef" @success="handleSuccess" @cancel="handleCancel" />
+    <addTask ref="addTaskRef" :task-id="props.taskId" @success="handleSuccess" @cancel="handleCancel" />
   </view>
 </template>
 
@@ -200,12 +202,6 @@ const handleReturn = async () => {
     
     // 获取任务ID，优先从props获取，其次从路由获取
     let taskId = props.taskId
-    if (!taskId) {
-      const pages = getCurrentPages()
-      const currentPage = pages[pages.length - 1]
-      const options = currentPage.options || {}
-      taskId = options.taskId || options.id || ''
-    }
     
     if (!taskId) {
       showMessage('任务ID不能为空', 'error')
