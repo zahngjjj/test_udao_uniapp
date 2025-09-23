@@ -5,7 +5,7 @@
 			:labelWidth="option?.form?.labelWidth" :errorType="(option?.form?.showMessage)? 'message': 'none'"
 			labelAlign="center">
 			<template v-for="(item, index) in rule" :key="index">
-            <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
+            <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p>
 			<!-- HTML内容渲染 -->	
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
 				<span>{{ form[item?.field]?.name }}</span>
@@ -28,6 +28,17 @@
 					</rich-text>
 				</view>	
             </u-form-item>
+			<u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type =='UploadImg'">
+				<UploadImage 
+					v-model="form[item?.field]" 
+					:multiple="item?.props?.multiple || false"
+					:maxCount="item?.props?.maxCount || 9"
+					:disabled="item?.props?.disabled || false"
+					:maxSize="item?.props?.maxSize || 5 * 1024 * 1024"
+					@upload-success="handleUploadSuccess"
+					@upload-error="handleUploadError"
+				/>
+			</u-form-item>
 			<u-form-item 
 				:label="item?.title" 
 				:prop="item?.field"
@@ -38,7 +49,7 @@
 					@cancel="picker[item?.field] = false"></u-datetime-picker>
 			</u-form-item>
             <u-form-item :label="item?.title" :prop="item?.field"
-					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
+					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload' ||item?.type === 'UploadImg'">
                     <!-- 计数器 -->
 					<u-number-box v-model="form[item?.field]" v-if="item?.type === 'inputNumber'"
 						:disabled="item?.props?.disabled" :placeholder="item?.props?.placeholder"
@@ -123,9 +134,11 @@
 
 
 					<!-- 上传 -->
-					<u-upload v-model="form[item?.field]" v-else-if="item?.type === 'upload'"
+					<!-- <u-upload v-model="form[item?.field]" v-else-if="item?.type === 'upload' ||item?.type === 'UploadImg'"
 						:disabled="item?.props?.disabled" :multiple="item?.props?.multiple"
-						:maxCount="item?.props?.limit"></u-upload>
+						:maxCount="item?.props?.limit" @change="handleFileChange"></u-upload> -->
+
+				
 					<!-- 文字 -->
 					<span v-else-if="item?.type === 'span'">{{item?.children[0]}}</span>
 					<!-- 文本输入,支持属性:提示信息,是否禁用 -->
@@ -228,6 +241,7 @@
 	import { ref } from 'vue'
 	import SingleUserSelect from './SingleUserSelect.vue'
 	import DepartmentSelect from '@/components/form-create-uni/DepartmentSelect.vue'
+	import UploadImage from './UploadImage.vue'
 	defineProps({
 		option: {
 			type: Object,
@@ -410,7 +424,23 @@
 		}
 
 	}
-
+	// 处理上传成功
+	const handleUploadSuccess = (data) => {
+		console.log('图片上传成功:', data)
+		uni.showToast({
+			title: '上传成功',
+			icon: 'success'
+		})
+	}
+	
+	// 处理上传失败
+	const handleUploadError = (error) => {
+		console.error('图片上传失败:', error)
+		uni.showToast({
+			title: '上传失败',
+			icon: 'none'
+		})
+	}
 	const confirmDate = (v) => {
 
 		const d = uni.$u.timeFormat(v.value, 'yyyy-mm-dd');
