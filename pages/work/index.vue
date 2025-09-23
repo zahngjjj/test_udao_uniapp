@@ -89,7 +89,15 @@
         </uni-grid-item>
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(12)">
-            <uni-icons type="calendar" size="30"></uni-icons>
+            <view class="icon-with-badge">
+              <uni-icons type="calendar" size="30"></uni-icons>
+              <uni-badge 
+                v-if="todoCount > 0" 
+                :text="todoCount > 99 ? '99+' : todoCount.toString()" 
+                absolute 
+                custom-style="font-size: 14px; min-width: 18px; height: 18px; line-height: 18px; font-weight: bold;"
+              ></uni-badge>
+            </view>
             <text class="text">待办任务</text>
           </view>
         </uni-grid-item>
@@ -113,10 +121,14 @@
 
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { getTaskTodoPage } from '@/api/task/index.js'
 
 const current = ref(0)
 const swiperDotIndex = ref(0)
+const todoCount = ref(0)
+let timer = null
+
 const data = ref([{
   image: '/static/images/banner/banner01.jpg'
 },
@@ -128,6 +140,20 @@ const data = ref([{
   }
 ])
 
+// 获取待办任务数量
+const fetchTodoCount = async () => {
+  try {
+    const response = await getTaskTodoPage({
+      pageNo: 1,
+      pageSize: 1 // 只需要获取总数，不需要具体数据
+    })
+    if (response && response.data) {
+      todoCount.value = response.data.total || 0
+    }
+  } catch (error) {
+    console.error('获取待办任务数量失败:', error)
+  }
+}
 
 const clickBannerItem = (item) => {
   console.log(item)
@@ -176,7 +202,47 @@ const handleGridClick= (index) =>{
     icon: 'none'
   })
 }
+// 启动定时器
+const startTimer = () => {
+  // 立即执行一次
+  fetchTodoCount()
+  
+  // 每30秒执行一次
+  timer = setInterval(() => {
+    fetchTodoCount()
+  }, 30000)
+}
+// 清除定时器
+const clearTimer = () => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+}
+// 页面生命周期
+onMounted(() => {
+  startTimer()
+})
 
+onUnmounted(() => {
+  clearTimer()
+})
+// 页面显示时重新获取数据
+uni.$on('onShow', () => {
+  fetchTodoCount()
+})
+
+// 页面隐藏时清除定时器，避免后台运行
+uni.$on('onHide', () => {
+  clearTimer()
+})
+
+// 页面重新显示时启动定时器
+uni.$on('onShow', () => {
+  if (!timer) {
+    startTimer()
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -194,7 +260,6 @@ view {
   font-size: 14px;
   line-height: inherit;
 }
-
 /* #endif */
 
 .text {
@@ -214,10 +279,14 @@ view {
   padding: 15px 0;
 }
 
+.icon-with-badge {
+  position: relative;
+  display: inline-block;
+}
+
 .uni-margin-wrap {
   width: 690rpx;
   width: 100%;
-;
 }
 
 .swiper {
