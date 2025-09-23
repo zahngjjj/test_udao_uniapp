@@ -17,21 +17,25 @@
           <uni-icons :type="showPassword ? 'eye' : 'eye-slash'" size="20" color="#999"></uni-icons>
         </view>
       </view>
+      
+      <!-- 记住密码选项 -->
+      <view class="remember-password flex align-center">
+        <checkbox-group @change="onRememberChange">
+          <label class="checkbox-label">
+            <checkbox :checked="rememberPassword" color="#007aff" />
+            <text class="checkbox-text">记住账号密码</text>
+          </label>
+        </checkbox-group>
+      </view>
+      
       <Verify @success="pwdLogin" :mode="'pop'" :captchaType="'blockPuzzle'"
               :imgSize="{ width: '330px', height: '155px' }" ref="verify"></Verify>
       <view class="action-btn">
         <button @click="handleLogin" class="login-btn cu-btn block bg-blue lg round">登录</button>
       </view>
     </view>
-
-    <!-- <view class="xieyi text-center">
-      <text class="text-grey1">登录即代表同意</text>
-      <text @click="handleUserAgrement" class="text-blue">《用户协议》</text>
-      <text @click="handlePrivacy" class="text-blue">《隐私协议》</text>
-    </view> -->
   </view>
 </template>
-
 
 <script setup>
 import {ref, onMounted} from 'vue'
@@ -50,8 +54,53 @@ const loginForm = ref({
   password: '',
   captchaVerification: ''
 })
+
 // 密码显示/隐藏状态
 const showPassword = ref(false)
+// 记住密码状态
+const rememberPassword = ref(false)
+
+// 本地存储的键名
+const STORAGE_KEYS = {
+  USERNAME: 'login_username',
+  PASSWORD: 'login_password',
+  REMEMBER: 'remember_password'
+}
+
+// 保存登录信息到本地存储
+const saveLoginInfo = () => {
+  if (rememberPassword.value) {
+    uni.setStorageSync(STORAGE_KEYS.USERNAME, loginForm.value.username)
+    uni.setStorageSync(STORAGE_KEYS.PASSWORD, loginForm.value.password)
+    uni.setStorageSync(STORAGE_KEYS.REMEMBER, true)
+  } else {
+    // 如果不记住密码，清除存储的信息
+    uni.removeStorageSync(STORAGE_KEYS.USERNAME)
+    uni.removeStorageSync(STORAGE_KEYS.PASSWORD)
+    uni.removeStorageSync(STORAGE_KEYS.REMEMBER)
+  }
+}
+
+// 从本地存储加载登录信息
+const loadLoginInfo = () => {
+  const savedRemember = uni.getStorageSync(STORAGE_KEYS.REMEMBER)
+  if (savedRemember) {
+    rememberPassword.value = true
+    loginForm.value.username = uni.getStorageSync(STORAGE_KEYS.USERNAME) || ''
+    loginForm.value.password = uni.getStorageSync(STORAGE_KEYS.PASSWORD) || ''
+  }
+}
+
+// 记住密码选项变化处理
+const onRememberChange = (e) => {
+  rememberPassword.value = e.detail.value.length > 0
+  if (!rememberPassword.value) {
+    // 如果取消记住密码，立即清除存储的信息
+    uni.removeStorageSync(STORAGE_KEYS.USERNAME)
+    uni.removeStorageSync(STORAGE_KEYS.PASSWORD)
+    uni.removeStorageSync(STORAGE_KEYS.REMEMBER)
+  }
+}
 
 // 点击隐私协议，跳到隐私协议的页面去
 const handlePrivacy = () => {
@@ -59,6 +108,7 @@ const handlePrivacy = () => {
     url: '/pages/privacy/index'
   })
 }
+
 // 切换密码显示/隐藏
 const togglePassword = () => {
   showPassword.value = !showPassword.value
@@ -71,8 +121,8 @@ const handleUserAgrement = () => {
   })
 }
 
-
 const verify = ref(null)
+
 // 登录
 const handleLogin = async () => {
   if (loginForm.value.username === "") {
@@ -97,9 +147,11 @@ const userStore = useUserStore()
 const pwdLogin = async (captchaParams) => {
   //弹窗显示：登录中，请耐心等待
   showLoading('登录中，请耐心等待')
-
+  
   // 处理登录验证码的问题
   userStore.Login(loginForm.value).then(res => {
+    // 登录成功后保存登录信息
+    saveLoginInfo()
     //获取用户信息，跳到首页
     loginSuccess()
   }).catch(err => {
@@ -108,7 +160,6 @@ const pwdLogin = async (captchaParams) => {
     //关闭弹窗
     closeLoading()
   })
-
 }
 
 const loginSuccess = () => {
@@ -120,9 +171,10 @@ const loginSuccess = () => {
   })
 }
 
-
 onMounted(() => {
   console.log('onMounted')
+  // 页面加载时自动填充保存的登录信息
+  loadLoginInfo()
 })
 </script>
 
@@ -184,6 +236,22 @@ page {
         transform: translateY(-50%);
         cursor: pointer;
         padding: 5px;
+      }
+    }
+    
+    .remember-password {
+      margin: 15px auto;
+      justify-content: flex-start;
+      
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        
+        .checkbox-text {
+          margin-left: 8px;
+          font-size: 14px;
+          color: #666;
+        }
       }
     }
 
