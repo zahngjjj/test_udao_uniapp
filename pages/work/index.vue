@@ -109,7 +109,15 @@
         </uni-grid-item>
         <uni-grid-item>
           <view class="grid-item-box" @click="handleGridClick(14)">
-            <uni-icons type="email-filled"  size="30"></uni-icons>
+            <view class="icon-with-badge">
+              <uni-icons type="email-filled" size="30"></uni-icons>
+              <uni-badge 
+                v-if="copyCount > 0" 
+                :text="copyCount > 99 ? '99+' : copyCount.toString()" 
+                absolute 
+                custom-style="font-size: 14px; min-width: 18px; height: 18px; line-height: 18px; font-weight: bold;"
+              ></uni-badge>
+            </view>
             <text class="text">抄送我的</text>
           </view>
         </uni-grid-item>
@@ -124,10 +132,12 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import { getTaskTodoPage } from '@/api/task/index.js'
+import { getProcessInstanceCopyPage } from '@/api/processInstance/index.js'
 
 const current = ref(0)
 const swiperDotIndex = ref(0)
 const todoCount = ref(0)
+const copyCount = ref(0)
 let timer = null
 
 const data = ref([{
@@ -155,7 +165,28 @@ const fetchTodoCount = async () => {
     console.error('获取待办任务数量失败:', error)
   }
 }
+// 获取抄送我的数量
+const fetchCopyCount = async () => {
+  try {
+    const response = await getProcessInstanceCopyPage({
+      pageNo: 1,
+      pageSize: 1 // 只需要获取总数，不需要具体数据
+    })
+    if (response && response.data) {
+      copyCount.value = response.data.total || 0
+    }
+  } catch (error) {
+    console.error('获取抄送我的数量失败:', error)
+  }
+}
 
+// 获取所有数量
+const fetchAllCounts = async () => {
+  await Promise.all([
+    fetchTodoCount(),
+    fetchCopyCount()
+  ])
+}
 const clickBannerItem = (item) => {
   console.log(item)
 }
@@ -207,11 +238,11 @@ const handleGridClick= (index) =>{
 // 启动定时器
 const startTimer = () => {
   // 立即执行一次
-  fetchTodoCount()
+   fetchAllCounts()
   
   // 每30秒执行一次
   timer = setInterval(() => {
-    fetchTodoCount()
+     fetchAllCounts()
   }, 30000)
 }
 
@@ -235,7 +266,7 @@ onUnmounted(() => {
 // 页面显示时的处理（从其他页面返回时会触发）
 onShow(() => {
   console.log('页面显示，刷新待办任务数量')
-  fetchTodoCount() // 立即刷新数据
+  fetchAllCounts()// 立即刷新数据
   if (!timer) {
     startTimer() // 如果定时器不存在，重新启动
   }
