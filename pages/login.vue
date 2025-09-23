@@ -3,7 +3,7 @@
     <view class="logo-content align-center justify-center flex">
       <image style="width: 100rpx;height: 100rpx;" :src="appLogo" mode="widthFix">
       </image>
-      <text class="title">芋道移动端登录</text>
+      <text class="title">移动端登录</text>
     </view>
     <view class="login-form-content">
       <view class="input-item flex align-center">
@@ -12,7 +12,10 @@
       </view>
       <view class="input-item flex align-center">
         <view class="iconfont icon-password icon"></view>
-        <input v-model="loginForm.password" type="password" class="input" placeholder="请输入密码" maxlength="20"/>
+        <input v-model="loginForm.password" :type="showPassword ? 'text' : 'password'" class="input" placeholder="请输入密码" maxlength="20"/>
+        <view class="eye-icon" @click="togglePassword">
+          <uni-icons :type="showPassword ? 'eye' : 'eye-slash'" size="20" color="#999"></uni-icons>
+        </view>
       </view>
       <Verify @success="pwdLogin" :mode="'pop'" :captchaType="'blockPuzzle'"
               :imgSize="{ width: '330px', height: '155px' }" ref="verify"></Verify>
@@ -21,11 +24,11 @@
       </view>
     </view>
 
-    <view class="xieyi text-center">
+    <!-- <view class="xieyi text-center">
       <text class="text-grey1">登录即代表同意</text>
       <text @click="handleUserAgrement" class="text-blue">《用户协议》</text>
       <text @click="handlePrivacy" class="text-blue">《隐私协议》</text>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -47,13 +50,18 @@ const loginForm = ref({
   password: '',
   captchaVerification: ''
 })
-
+// 密码显示/隐藏状态
+const showPassword = ref(false)
 
 // 点击隐私协议，跳到隐私协议的页面去
 const handlePrivacy = () => {
   uni.navigateTo({
     url: '/pages/privacy/index'
   })
+}
+// 切换密码显示/隐藏
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
 }
 
 //点击用户协议
@@ -118,7 +126,6 @@ onMounted(() => {
 })
 </script>
 
-
 <style lang="scss" scoped>
 page {
   background-color: #ffffff;
@@ -153,6 +160,7 @@ page {
       background-color: #f5f6f7;
       height: 45px;
       border-radius: 20px;
+      position: relative;
 
       .icon {
         font-size: 38 rpx;
@@ -166,8 +174,17 @@ page {
         line-height: 20px;
         text-align: left;
         padding-left: 15px;
+        padding-right: 45px;
       }
 
+      .eye-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        padding: 5px;
+      }
     }
 
     .login-btn {
