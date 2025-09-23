@@ -49,7 +49,7 @@
 					@cancel="picker[item?.field] = false"></u-datetime-picker>
 			</u-form-item>
             <u-form-item :label="item?.title" :prop="item?.field"
-					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload' ||item?.type === 'UploadImg'">
+					v-if="item?.type === 'input' || item?.type === 'inputNumber' || item?.type === 'radio' || item?.type === 'checkbox' || item?.type === 'select' || item?.type === 'switch' || item?.type === 'timePicker' || item?.type === 'datePicker' || item?.type === 'colorPicker' || item?.type === 'slider' || item?.type === 'rate' || item?.type === 'span' || item?.type === 'el-transfer' || item?.type === 'fc-editor'  || item?.type === 'tree' || item?.type === 'cascader' || item?.type === 'upload'">
                     <!-- 计数器 -->
 					<u-number-box v-model="form[item?.field]" v-if="item?.type === 'inputNumber'"
 						:disabled="item?.props?.disabled" :placeholder="item?.props?.placeholder"
