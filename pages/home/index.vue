@@ -144,6 +144,7 @@ const current = ref(0)
 const swiperDotIndex = ref(0)
 const todoCount = ref(0)
 const copyCount = ref(0)
+const lastTotalCount = ref(0) // 记录上次的总数量
 let timer = null
 
 // 计算总的待处理数量
@@ -198,9 +199,17 @@ const fetchAllCounts = async () => {
     fetchTodoCount(),
     fetchCopyCount()
   ])
-
-    // 设置桌面图标角标
-  setBadgeNumber(totalCount.value)
+  
+  const newTotalCount = totalCount.value
+  
+  // 设置桌面图标角标
+  setBadgeNumber(newTotalCount)
+  
+  // 如果数量增加，发送通知
+  sendLocalNotification(newTotalCount, lastTotalCount.value)
+  
+  // 更新记录的数量
+  lastTotalCount.value = newTotalCount
 }
 
 // 设置桌面图标角标
@@ -282,6 +291,39 @@ const clearTimer = () => {
     clearInterval(timer)
     timer = null
   }
+}
+// 发送本地通知
+const sendLocalNotification = (newCount, oldCount) => {
+  // #ifdef APP-PLUS
+  if (newCount > oldCount && newCount > 0) {
+    const increase = newCount - oldCount
+    const message = plus.push.createMessage(
+      `您有 ${increase} 个新的待处理任务`,
+      'task_notification',
+      {
+        title: '任务提醒',
+        content: `待办任务: ${todoCount.value}个，抄送我的: ${copyCount.value}个`,
+        payload: JSON.stringify({
+          type: 'task_reminder',
+          todoCount: todoCount.value,
+          copyCount: copyCount.value,
+          totalCount: newCount
+        })
+      }
+    )
+    
+    // 设置通知的显示选项
+    message.options = {
+      cover: false, // 不覆盖之前的通知
+      delay: 0,     // 立即显示
+      sound: 'system', // 系统提示音
+      title: '工作提醒'
+    }
+    
+    // 推送通知
+    plus.push.publish(message)
+  }
+  // #endif
 }
 
 // 页面生命周期
