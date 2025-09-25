@@ -26,7 +26,6 @@
 			</u-form-item>
 
 			<u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='DeptSelect'">
-				<!-- 部门选择器逻辑 -->
 				<DepartmentSelect v-model="form[item?.field]" />
             </u-form-item>
 
@@ -181,6 +180,10 @@
 									<text>{{ form[childItem?.field]?.name }}</text>
 									<single-user-select v-model="form[childItem?.field]" />
 								</u-form-item>
+								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type ==='DeptSelect'">
+				                    <!-- 部门选择器逻辑 -->
+									<DepartmentSelect v-model="form[childItem?.field]" />
+								</u-form-item>
 								<u-form-item 
 									:label="childItem?.title" 
 									:prop="childItem?.field"
@@ -203,7 +206,17 @@
 								</template>
 								</u-form-item>
 
-
+								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type =='UploadImg'">
+									<UploadImage 
+										v-model="form[childItem?.field]" 
+										:multiple="childItem?.props?.multiple || false"
+										:maxCount="childItem?.props?.maxCount || 9"
+										:disabled="childItem?.props?.disabled || false"
+										:maxSize="childItem?.props?.maxSize || 5 * 1024 * 1024"
+										@upload-success="handleUploadSuccess"
+										@upload-error="handleUploadError"
+									/>
+								</u-form-item>
 								<!-- 可以根据需要添加其他类型的表单项 -->
 								<u-form-item 
 									:label="childItem?.title" 
@@ -214,17 +227,6 @@
 										:placeholder="childItem?.props?.placeholder"
 										:disabled="childItem?.props?.disabled">
 									</u--input>
-								</u-form-item>
-									<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type =='UploadImg'">
-									<UploadImage 
-										v-model="form[childItem?.field]" 
-										:multiple="childItem?.props?.multiple || false"
-										:maxCount="childItem?.props?.maxCount || 9"
-										:disabled="childItem?.props?.disabled || false"
-										:maxSize="childItem?.props?.maxSize || 5 * 1024 * 1024"
-										@upload-success="handleUploadSuccess"
-										@upload-error="handleUploadError"
-									/>
 								</u-form-item>
 							</template>
 						</view>
