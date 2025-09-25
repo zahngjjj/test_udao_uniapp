@@ -121,12 +121,12 @@
             <text class="text">抄送我的</text>
           </view>
         </uni-grid-item>
-        <uni-grid-item>
+        <!-- <uni-grid-item>
           <view class="grid-item-box" @click="handleSendMsg">
             <uni-icons type="checkmarkempty" size="30"></uni-icons>
             <text class="text">测试发消息</text>
           </view>
-        </uni-grid-item>
+        </uni-grid-item> -->
       </uni-grid>
     </view>
   </view>
