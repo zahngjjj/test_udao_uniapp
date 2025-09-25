@@ -34,7 +34,7 @@
 					class="html-content"
 					:style="item?.style"
 					:hidden="item?.hidden"
-					v-show="item?.display !== false">
+					v-if="item?.display !== false">
 					<rich-text 
 						:nodes="item?.children?.[0] || item?.attrs?.innerHTML || ''"
 						:selectable="item?.native || false">
@@ -234,7 +234,7 @@
 									class="html-content"
 									:style="childItem?.style"
 									:hidden="childItem?.hidden"
-									v-show="childItem?.display !== false">
+									v-if="childItem?.display !== false">
 									<rich-text 
 										:nodes="childItem?.children?.[0] || childItem?.attrs?.innerHTML || ''"
 										:selectable="childItem?.native || false">
