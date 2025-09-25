@@ -8,7 +8,7 @@
             <!-- <p>  这是一个测试 {{ item }} / {{ item.type }} / {{ item?.field }} / {{ form[item?.field] }}</p> -->
 			<!-- HTML内容渲染 -->	
              <u-form-item :label="item?.title" :prop="item?.field" v-if="item?.type ==='UserSelect'">
-				<span>{{ form[item?.field]?.name }}</span>
+				<text>{{ form[item?.field]?.name }}</text>
 				<single-user-select v-model="form[item?.field]" />
             </u-form-item>
 
@@ -154,12 +154,12 @@
 
 				
 					<!-- 文字 -->
-					<span v-else-if="item?.type === 'span'">{{item?.children[0]}}</span>
+					<text v-else-if="item?.type === 'span'">{{item?.children[0]}}</text>
 					<!-- 文本输入,支持属性:提示信息,是否禁用 -->
 					<u--input v-else-if="item?.type === 'input'"  v-model="form[item?.field]" :placeholder="item?.props?.placeholder"
 						:disabled="item?.props?.disabled" :focus="item?.props?.autofocus"
 						:clearable="item?.props?.clearable" :showWordLimit="item?.props?.showWordLimit" />
-					<span v-else></span>
+					<text v-else></text>
 			</u-form-item>
 
 	    <!-- fcRow布局渲染 -->
@@ -178,7 +178,7 @@
 							<template v-for="(childItem) in colItem?.children" :key="childItem?._fc_id">
 								<!-- 递归渲染子项，这里简化为直接渲染表单项 -->
 								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type ==='UserSelect'">
-									<span>{{ form[childItem?.field]?.name }}</span>
+									<text>{{ form[childItem?.field]?.name }}</text>
 									<single-user-select v-model="form[childItem?.field]" />
 								</u-form-item>
 								<u-form-item 
