@@ -228,6 +228,19 @@
 										:disabled="childItem?.props?.disabled">
 									</u--input>
 								</u-form-item>
+
+								<u-form-item :label="childItem?.title" :prop="childItem?.field" v-if="childItem?.type === 'html'">
+								<view
+									class="html-content"
+									:style="childItem?.style"
+									:hidden="childItem?.hidden"
+									v-show="childItem?.display !== false">
+									<rich-text 
+										:nodes="childItem?.children?.[0] || childItem?.attrs?.innerHTML || ''"
+										:selectable="childItem?.native || false">
+									</rich-text>
+								</view>	
+							</u-form-item>
 							</template>
 						</view>
 					</template>
