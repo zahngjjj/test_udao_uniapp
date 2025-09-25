@@ -1,5 +1,5 @@
 {
-    "name" : "vuetest",
+    "name" : "oa",
     "appid" : "__UNI__575BF8C",
     "description" : "",
     "versionName" : "1.0.0",
@@ -40,7 +40,9 @@
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
-                    "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>"
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>"
                 ]
             },
             /* ios打包配置 */
