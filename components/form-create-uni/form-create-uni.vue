@@ -58,7 +58,8 @@
 				v-if="item?.type === 'datePicker' || item?.type === 'DatePicker'">
 				<u-cell :disabled="item?.props?.disabled" @click="showPicker(item.field, item.type)"
 					:title="form[item?.field] || '选择日期'" class="clickable-cell" />
-				<u-datetime-picker :show="picker[item?.field]" mode="date" @confirm="confirmDate"
+				<u-datetime-picker :show="picker[item?.field]" mode="date" @confirm="confirmDate" 
+				    :min-date="currentDate"
 					@cancel="picker[item?.field] = false"></u-datetime-picker>
 			</u-form-item>
             <u-form-item :label="item?.title" :prop="item?.field"
@@ -100,6 +101,7 @@
 							:title="form[item?.field] || '请点此选择' " />
 
 						<u-datetime-picker :show="picker[item?.field]" mode="date" @confirm="confirmDate"
+						    :min-date="currentDate"
 							@cancel="picker[item?.field] = false"></u-datetime-picker>
 
 					</template>
@@ -110,6 +112,7 @@
 							:title="form[item?.field] || '请点此选择' " />
 
 						<u-datetime-picker :show="picker[item?.field]" mode="time" @confirm="confirmTime"
+						    :min-date="currentDate"
 							@cancel="picker[item?.field] = false"></u-datetime-picker>
 
 					</template>
@@ -192,6 +195,7 @@
 									<u-cell :disabled="childItem?.props?.disabled" @click="showPicker(childItem.field, childItem.type)"
 										:title="form[childItem?.field] || '选择日期'" class="clickable-cell" />
 									<u-datetime-picker :show="picker[childItem?.field]" mode="date" @confirm="confirmDate"
+									:min-date="currentDate"
 										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
 								</template>
 
@@ -201,6 +205,7 @@
 										:title="form[childItem?.field] || '选择时间'"  class="clickable-cell" />
 
 									<u-datetime-picker :show="picker[childItem?.field]" mode="time" @confirm="confirmTime"
+									:min-date="currentDate"
 										@cancel="picker[childItem?.field] = false"></u-datetime-picker>
 
 								</template>
@@ -291,6 +296,7 @@
 		}
 	})
 
+	const currentDate = ref(Date.now())
 	const rule = ref([])
 
 	const form = ref({
