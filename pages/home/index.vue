@@ -135,7 +135,7 @@
 
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted,computed } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import { getTaskTodoPage } from '@/api/task/index.js'
 import { getProcessInstanceCopyPage } from '@/api/processInstance/index.js'
@@ -145,6 +145,11 @@ const swiperDotIndex = ref(0)
 const todoCount = ref(0)
 const copyCount = ref(0)
 let timer = null
+
+// 计算总的待处理数量
+const totalCount = computed(() => {
+  return todoCount.value + copyCount.value
+})
 
 const data = ref([{
   image: '/static/images/banner/banner01.jpg'
@@ -156,6 +161,7 @@ const data = ref([{
     image: '/static/images/banner/banner03.jpg'
   }
 ])
+
 
 // 获取待办任务数量
 const fetchTodoCount = async () => {
@@ -192,6 +198,20 @@ const fetchAllCounts = async () => {
     fetchTodoCount(),
     fetchCopyCount()
   ])
+
+    // 设置桌面图标角标
+  setBadgeNumber(totalCount.value)
+}
+
+// 设置桌面图标角标
+const setBadgeNumber = (count) => {
+  // #ifdef APP-PLUS
+  if (count > 0) {
+    plus.runtime.setBadgeNumber(count)
+  } else {
+    plus.runtime.setBadgeNumber(0) // 清除角标
+  }
+  // #endif
 }
 const clickBannerItem = (item) => {
   console.log(item)
